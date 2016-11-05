@@ -387,14 +387,14 @@ static
 PyObject * glm_${type}Iterator_tp_iternext(PyObject *self) {
 	PyObject *result;
 	glm_${type}Iterator *iter = (glm_${type}Iterator *)self;
-	
+
 	if(iter->obj == NULL) {
 		PyErr_SetString(PyExc_TypeError, "${type.capitalize()} is invalid.");
 		return NULL;
 	}
-	
+
 	Py_ssize_t len = PyObject_Size(iter->obj);
-	
+
 	if(len < 0) {
 		std::string s = "'";
 		s += Py_TYPE(iter->obj)->tp_name;
@@ -402,17 +402,17 @@ PyObject * glm_${type}Iterator_tp_iternext(PyObject *self) {
 		PyErr_SetString(PyExc_TypeError, s.c_str());
 		return NULL;
 	}
-	
+
 	if(iter->offset > len - 1)
 		return NULL;
-	
+
 	result = PySequence_GetItem(iter->obj, iter->offset);
-	
+
 	if(result == NULL)
 		return NULL;
-	
+
 	iter->offset += 1;
-	
+
 	return result;
 }
 
@@ -420,10 +420,10 @@ static
 PyObject * glm_${type}Iterator_tp_iter(PyObject *self) {
 	PyObject *result;
 	PyObject *args = Py_BuildValue("(O)", ((glm_${type}Iterator *)self)->obj);
-	
+
 	if(args == NULL)
 		return NULL;
-	
+
 	result = PyObject_CallObject((PyObject *)Py_TYPE(self), args);
 	Py_DECREF(args);
 	return result;
@@ -433,15 +433,15 @@ static
 int glm_${type}Iterator_tp_init(PyObject *self, PyObject *args, PyObject *kwargs) {
 	glm_${type}Iterator *real;
 	PyObject *obj;
-	
+
 	real = (glm_${type}Iterator *)self;
 	real->offset = 0;
-	
+
 	if(!PyArg_ParseTuple(args, "O:${type}Iterator", &obj)) {
 		real->obj = NULL;
 		return -1;
 	}
-	
+
 	if(obj == NULL) {
 		real->obj = NULL;
 	}
@@ -449,7 +449,7 @@ int glm_${type}Iterator_tp_init(PyObject *self, PyObject *args, PyObject *kwargs
 		Py_INCREF(obj);
 		real->obj = obj;
 	}
-	
+
 	return 0;
 }
 
@@ -527,7 +527,7 @@ PyTypeObject glm_${type}IteratorType = {
 static
 PyObject *glm_${p}mat${n}_nb_add(PyObject *self, PyObject *other) {
 	PyObject *result;
-	
+
 	if(PyNumber_Check(other)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
 $?{type == 'int'
@@ -554,7 +554,7 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	return result;
 }
 
@@ -587,7 +587,7 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	return result;
 }
 
@@ -624,7 +624,7 @@ $??{
 $?}
 		return NULL;
 	}
-	
+
 	return result;
 }
 
@@ -653,7 +653,7 @@ PyObject *glm_${p}mat${n}_nb_inplace_add(PyObject *self, PyObject *other) {
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	Py_INCREF(self);
 	return self;
 }
@@ -672,7 +672,7 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	Py_INCREF(self);
 	return self;
 }
@@ -697,7 +697,7 @@ $??{
 $?}
 		return NULL;
 	}
-	
+
 	Py_INCREF(self);
 	return self;
 }
@@ -735,7 +735,7 @@ $??{
 $?}
 		return NULL;
 	}
-	
+
 	return result;
 }
 
@@ -759,7 +759,7 @@ $??{
 $?}
 		return NULL;
 	}
-	
+
 	Py_INCREF(self);
 	return self;
 }
@@ -778,7 +778,7 @@ PyObject *glm_${p}mat${n}_sq_item(PyObject *self, Py_ssize_t item) {
 		PyErr_SetString(PyExc_IndexError, "Out of range.");
 		return NULL;
 	}
-	
+
 $?{type == 'int'
 	result = PyLong_FromLong((long)((glm_${p}mat${n} *)self)->mat[item/${rows}][item%${rows}]);
 $??{type == 'float'
@@ -793,18 +793,18 @@ int glm_${p}mat${n}_sq_ass_item(PyObject *self, Py_ssize_t item, PyObject *value
 		PyErr_SetString(PyExc_IndexError, "Out of range.");
 		return -1;
 	}
-	
+
 	if(!PyNumber_Check(value)) {
 		PyErr_SetString(PyExc_TypeError, "Must be a number.");
 		return -1;
 	}
-	
+
 $?{type == 'int'
 	((glm_${p}mat${n} *)self)->mat[item/${rows}][item%${rows}] = (int)PyLong_AsLong(value);
 $??{type == 'float'
 	((glm_${p}mat${n} *)self)->mat[item/${rows}][item%${rows}] = (float)PyFloat_AsDouble(value);
 $?}
-	
+
 	return 0;
 }
 
@@ -832,20 +832,20 @@ int glm_${p}mat${n}_tp_init(PyObject *self, PyObject *args, PyObject *kwargs) {
 		PyErr_SetString(PyExc_TypeError, "Can only init ${p}mat${n}.");
 		return -1;
 	}
-	
+
 	glm_${p}mat${n} *real = (glm_${p}mat${n} *)self;
-	
+
 	Py_ssize_t argsize = PyTuple_GET_SIZE(args);
-	
+
 	if(argsize == 0) {
 		real->mat = glm::${p}mat${n}();
 		return 0;
 	}
-	
+
 	if(argsize == 1) {
 		PyObject *tmp;
 		tmp = PyTuple_GET_ITEM(args, 0);
-		
+
 		if(PyNumber_Check(tmp)) {
 $?{type == 'int'
 			real->mat = glm::${p}mat${n}((int)PyLong_AsLong(tmp));
@@ -854,16 +854,16 @@ $??{type == 'float'
 $?}
 			return 0;
 		}
-		
+
 		if(PyBytes_CheckExact(tmp)) {
 			memcpy(&real->mat, PyBytes_AsString(tmp), sizeof(${type}) * ${cols * rows});
-			
+
 			return 0;
 		}
 	}
-	
+
 	real->mat = glm::${p}mat${n}();
-	
+
 	PyObject *tmp;
 	Py_ssize_t i;
 	Py_ssize_t at = 0;
@@ -873,33 +873,33 @@ $?}
 
 		if(PyBytes_CheckExact(tmp)) {
 			size_t len = PyBytes_Size(tmp) / sizeof(${type});
-			
+
 			if(at + len > ${cols * rows - 1})
 				len = ${cols * rows} - at;
-			
+
 			memcpy(glm::value_ptr(real->mat) + at, PyBytes_AsString(tmp), len * sizeof(${type}));
-			
+
 			at += len;
 		}
 		else if(PyIter_Check(tmp) || Py_TYPE(tmp)->tp_iter) {
 			PyObject *tmpi = PyObject_GetIter(tmp);
 			PyObject *item;
-	
+
 			while(1) {
 				item = PyIter_Next(tmpi);
 				if(item == NULL)
 					break;
-		
+
 $?{type == 'int'
 				real->mat[at/${rows}][at%${rows}] = (int)PyLong_AsLong(item);
 $??{type == 'float'
 				real->mat[at/${rows}][at%${rows}] = (float)PyFloat_AsDouble(item);
 $?}
-		
+
 				Py_DECREF(item);
 				at += 1;
 			}
-	
+
 			Py_DECREF(tmpi);
 		}
 		else if(PyNumber_Check(tmp)) {
@@ -915,13 +915,13 @@ $?}
 			PyErr_Format(PyExc_TypeError, "Initialization only accepts numbers, sequences, and bytes as arguments, not '%s' at argument %i.", Py_TYPE(tmp)->tp_name, (int)at);
 			return -1;
 		}
-		
+
 		if(at > ${cols * rows}) {
 			PyErr_SetString(PyExc_TypeError, "Too much data.");
 			return -1;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -940,43 +940,43 @@ PyObject *glm_${p}mat${n}_tp_richcompare(PyObject *self, PyObject *other, int op
 					PyObject *itero = PyObject_GetIter(other);
 					PyObject *iteritem;
 					PyObject *iteritemo;
-					
+
 					if(iter != NULL && itero != NULL) {
 						while(true) {
 							iteritem = PyIter_Next(iter);
 							iteritemo = PyIter_Next(itero);
-						
+
 							if(iteritem == NULL && iteritemo == NULL) {
 								Py_INCREF(Py_True);
 								return Py_True;
 							}
-						
+
 							if(iteritem == NULL || iteritemo == NULL || 1 != PyObject_RichCompareBool(iteritem, iteritemo, Py_${I[0]}))
 								break;
-							
+
 							Py_DECREF(iteritem);
 							Py_DECREF(iteritemo);
 						}
 					}
-					
+
 					Py_XDECREF(iter);
 					Py_XDECREF(itero);
 				}
-				
+
 				Py_INCREF(Py_False);
 				return Py_False;
 			}
-			
+
 			if(1 != PyObject_IsInstance(other, (PyObject *)&glm_${p}mat${n}Type)) {
 				Py_INCREF(Py_False);
 				return Py_False;
 			}
-			
+
 			if(((glm_${p}mat${n} *)self)->mat ${I[1]} ((glm_${p}mat${n} *)other)->mat) {
 				Py_INCREF(Py_True);
 				return Py_True;
 			}
-			
+
 			Py_INCREF(Py_False);
 			return Py_False;
 /*$ $*/
@@ -1000,10 +1000,10 @@ $??{
 	x ^= _Py_HashDouble((double)((glm_${p}mat${n} *)self)->mat[${int(I/rows)}][${int(I%rows)}]) << ${int(I / (cols * rows) * 31)};
 /*$ $*/
 $?}
-	
+
 	if(x == -1)
 		x = -2;
-	
+
 	return x;
 }
 
@@ -1041,14 +1041,14 @@ $?}
 $?{not only
 	else if(PyIter_Check(other) || Py_TYPE(other)->tp_iter) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
-		
+
 		PyObject *convert;
 		PyObject *args = Py_BuildValue("(O)", other);
 		convert = PyObject_CallObject((PyObject *)Py_TYPE(self), args);
 		Py_DECREF(args);
-		
+
 		((glm_${p}vec${n} *)result)->vec = ((glm_${p}vec${n} *)self)->vec ${s} ((glm_${p}vec${n} *)convert)->vec;
-		
+
 		Py_DECREF(convert);
 	}
 $?}
@@ -1056,7 +1056,7 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "${'Must be a number or of the same type.' if only else 'Must be a number, the same type, or an iterable.'}");
 		return NULL;
 	}
-	
+
 	return result;
 }
 
@@ -1076,9 +1076,9 @@ $?{not only
 		PyObject *args = Py_BuildValue("(O)", other);
 		convert = PyObject_CallObject((PyObject *)Py_TYPE(self), args);
 		Py_DECREF(args);
-		
+
 		((glm_${p}vec${n} *)self)->vec ${s}= ((glm_${p}vec${n} *)convert)->vec;
-		
+
 		Py_DECREF(convert);
 	}
 $?}
@@ -1086,7 +1086,7 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "${'Must be a number or of the same type.' if only else 'Must be a number, the same type, or an iterable.'}");
 		return NULL;
 	}
-	
+
 	Py_INCREF(self);
 	return self;
 }
@@ -1114,7 +1114,7 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	return result;
 }
 
@@ -1122,50 +1122,50 @@ static
 PyObject *glm_${p}vec${n}_nb_divmod(PyObject *self, PyObject *other) {
 	if(PyNumber_Check(self) && 1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type)) {
 		PyObject *whole = PyNumber_FloorDivide(self, other);
-	
+
 		if(whole == NULL)
 			return NULL;
-		
+
 		PyObject *args = Py_BuildValue("(O)", self);
 		PyObject *tmp = Py_TYPE(other)->tp_new(Py_TYPE(other), args, NULL);
 		Py_DECREF(args);
 		PyObject *remain = PyNumber_Remainder(tmp, other);
 		Py_DECREF(tmp);
-		
+
 		if(remain == NULL) {
 			Py_DECREF(whole);
 			return NULL;
 		}
-		
+
 		PyObject *result = Py_BuildValue("(OO)", whole, remain);
-		
+
 		Py_DECREF(whole);
 		Py_DECREF(remain);
-		
+
 		return result;
 	}
 	else if(!PyNumber_Check(other) && 1 != PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type)) {
 		PyErr_SetString(PyExc_TypeError, "Other must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	PyObject *whole = PyNumber_FloorDivide(self, other);
-	
+
 	if(whole == NULL)
 		return NULL;
-	
+
 	PyObject *remain = PyNumber_Remainder(self, other);
-	
+
 	if(remain == NULL) {
 		Py_DECREF(whole);
 		return NULL;
 	}
-	
+
 	PyObject *result = Py_BuildValue("(OO)", whole, remain);
-	
+
 	Py_DECREF(whole);
 	Py_DECREF(remain);
-	
+
 	return result;
 }
 
@@ -1174,7 +1174,7 @@ PyObject *glm_${p}vec${n}_nb_power(PyObject *self, PyObject *other) {
 	PyObject *result;
 	if(PyNumber_Check(other)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);;
-		
+
 $?{type == 'int'
 		((glm_${p}vec${n} *)result)->vec = glm::pow(((glm_${p}vec${n} *)self)->vec, glm::${p}vec${n}((int)PyLong_AsLong(other)));
 $??{type == 'float'
@@ -1189,7 +1189,7 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	return result;
 }
 $?}
@@ -1255,7 +1255,7 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	return result;
 }
 $?}
@@ -1275,9 +1275,9 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	((glm_${p}vec${n} *)self)->vec = glm::floor(((glm_${p}vec${n} *)self)->vec);
-	
+
 	Py_INCREF(self);
 	return self;
 }
@@ -1297,7 +1297,7 @@ PyObject *glm_${p}vec${n}_sq_item(PyObject *self, Py_ssize_t item) {
 		PyErr_SetString(PyExc_IndexError, "Out of range.");
 		return NULL;
 	}
-	
+
 $?{type == 'int'
 	result = PyLong_FromLong((long)((glm_${p}vec${n} *)self)->vec[item]);
 $??{type == 'float'
@@ -1312,18 +1312,18 @@ int glm_${p}vec${n}_sq_ass_item(PyObject *self, Py_ssize_t item, PyObject *value
 		PyErr_SetString(PyExc_IndexError, "Out of range.");
 		return -1;
 	}
-	
+
 	if(!PyNumber_Check(value)) {
 		PyErr_SetString(PyExc_TypeError, "Must be a number.");
 		return -1;
 	}
-	
+
 $?{type == 'int'
 	((glm_${p}vec${n} *)self)->vec[item] = (int)PyLong_AsLong(value);
 $??{type == 'float'
 	((glm_${p}vec${n} *)self)->vec[item] = (float)PyFloat_AsDouble(value);
 $?}
-	
+
 	return 0;
 }
 
@@ -1351,20 +1351,20 @@ int glm_${p}vec${n}_tp_init(PyObject *self, PyObject *args, PyObject *kwargs) {
 		PyErr_SetString(PyExc_TypeError, "Can only init ${p}vec${n}.");
 		return -1;
 	}
-	
+
 	glm_${p}vec${n} *real = (glm_${p}vec${n} *)self;
-	
+
 	Py_ssize_t argsize = PyTuple_GET_SIZE(args);
-	
+
 	if(argsize == 0) {
 		real->vec = glm::${p}vec${n}();
 		return 0;
 	}
-	
+
 	if(argsize == 1) {
 		PyObject *tmp;
 		tmp = PyTuple_GET_ITEM(args, 0);
-		
+
 		if(PyNumber_Check(tmp)) {
 $?{type == 'int'
 			real->vec = glm::${p}vec${n}((int)PyLong_AsLong(tmp));
@@ -1373,53 +1373,53 @@ $??{type == 'float'
 $?}
 			return 0;
 		}
-		
+
 		if(PyBytes_CheckExact(tmp)) {
 			memcpy(&real->vec, PyBytes_AsString(tmp), sizeof(${type}) * ${n});
-			
+
 			return 0;
 		}
 	}
-	
+
 	real->vec = glm::${p}vec${n}();
-	
+
 	PyObject *tmp;
 	Py_ssize_t i;
 	Py_ssize_t at = 0;
 
 	for(i = 0; i < argsize; i++) {
 		tmp = PyTuple_GET_ITEM(args, i);
-		
+
 		if(PyBytes_CheckExact(tmp)) {
 			size_t len = PyBytes_Size(tmp) / sizeof(${type});
-			
+
 			if(at + len > ${n - 1})
 				len = ${n} - at;
-			
+
 			memcpy(glm::value_ptr(real->vec) + at, PyBytes_AsString(tmp), len * sizeof(${type}));
-			
+
 			at += len;
 		}
 		else if(PyIter_Check(tmp) || Py_TYPE(tmp)->tp_iter) {
 			PyObject *tmpi = PyObject_GetIter(tmp);
 			PyObject *item;
-	
+
 			while(1) {
 				item = PyIter_Next(tmpi);
 				if(item == NULL)
 					break;
-		
+
 $?{type == 'int'
 				real->vec[at] = (int)PyLong_AsLong(item);
 $??{type == 'float'
 				real->vec[at] = (float)PyFloat_AsDouble(item);
 $?}
-		
+
 				Py_DECREF(item);
-				
+
 				at += 1;
 			}
-	
+
 			Py_DECREF(tmpi);
 		}
 		else if(PyNumber_Check(tmp)) {
@@ -1435,13 +1435,13 @@ $?}
 			PyErr_Format(PyExc_TypeError, "Initialization only accepts numbers, sequences, and bytes as arguments, not '%s' at argument %i.", Py_TYPE(tmp)->tp_name, (int)at);
 			return -1;
 		}
-		
+
 		if(at > ${n}) {
 			PyErr_SetString(PyExc_TypeError, "Too much data.");
 			return -1;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -1449,35 +1449,35 @@ static
 PyObject * glm_${p}vec${n}_tp_getattro(PyObject *self, PyObject *attr_name) {
 	PyObject *tmp;
 	tmp = PyObject_GenericGetAttr(self, attr_name);
-	
+
 	if(tmp != NULL)
 		return tmp;
 	else
 		PyErr_Clear();
-	
+
 	if(!PyUnicode_Check(attr_name)) {
 		PyErr_SetString(PyExc_TypeError, "Attributes use strings.");
 		return NULL;
 	}
-	
+
 	Py_ssize_t swizzles = PyObject_Size(attr_name);
-	
+
 	if(swizzles < 1) {
 		PyErr_SetString(PyExc_TypeError, "Attributes are strings with a commendable length.");
 		return NULL;
 	}
-	
+
 	PyObject * result;
 	PyObject * args;
 	Py_ssize_t c;
-	
+
 	args = PyTuple_New(swizzles);
-	
+
 	if(args == NULL) {
 		PyErr_SetString(PyExc_ValueError, "Could not create a simple tuple...hmmm...");
 		return NULL;
 	}
-	
+
 	for(c = 0; c < swizzles; c++) {
 		tmp = PySequence_ITEM(attr_name, c);
 /*$ {((0, 'x', 's', 'r'), (1, 'y', 't', 'g'), (2, 'z', 'p', 'b'), (3, 'w', 'q', 'a'))[:n]} $*/
@@ -1497,10 +1497,10 @@ $?}
 			PyErr_SetString(PyExc_AttributeError, "Swizzle out of range.");
 			return NULL;
 		}
-		
+
 		Py_DECREF(tmp);
 	}
-	
+
 	if(swizzles == 1) {
 		result = PyTuple_GET_ITEM(args, 0);
 		Py_INCREF(result);
@@ -1513,12 +1513,12 @@ $?}
 		result = PyObject_CallObject((PyObject *)&glm_${p}vec4Type, args);
 	else
 		return args;
-	
+
 	Py_DECREF(args);
-	
+
 	if(result == NULL)
 		PyErr_SetString(PyExc_ValueError, "Could not create vector.");
-	
+
 	return result;
 }
 
@@ -1528,12 +1528,12 @@ int glm_${p}vec${n}_tp_setattro(PyObject *self, PyObject *attr_name, PyObject *v
 		PyErr_SetString(PyExc_TypeError, "Attributes use strings.");
 		return -1;
 	}
-	
+
 	Py_ssize_t swizzles = PyObject_Size(attr_name);
-	
+
 	Py_ssize_t c;
 	PyObject *tmp;
-	
+
 	if(PyNumber_Check(value)) {
 		for(c = 0; c < swizzles; c++) {
 			tmp = PySequence_ITEM(attr_name, c);
@@ -1553,21 +1553,21 @@ $?}
 				PyErr_SetString(PyExc_AttributeError, "Swizzle out of range.");
 				return -1;
 			}
-		
+
 			Py_DECREF(tmp);
 		}
 	}
 	else if(PyIter_Check(value) || Py_TYPE(value)->tp_iter) {
 		PyObject *iter = PyObject_GetIter(value);
 		PyObject *iteritem;
-		
+
 		if(iter == NULL)
 			return -1;
-		
+
 		for(c = 0; c < swizzles; c++) {
 			tmp = PySequence_ITEM(attr_name, c);
 			iteritem = PyIter_Next(iter);
-			
+
 			if(iteritem == NULL) {
 				Py_DECREF(tmp);
 				Py_DECREF(iter);
@@ -1599,18 +1599,18 @@ $?}
 				PyErr_SetString(PyExc_AttributeError, "Swizzle out of range.");
 				return -1;
 			}
-			
+
 			Py_DECREF(iteritem);
 			Py_DECREF(tmp);
 		}
-		
+
 		Py_DECREF(iter);
 	}
 	else {
 		PyErr_SetString(PyExc_AttributeError, "Value must be a number or iterable.");
 		return -1;
 	}
-	
+
 	return 0;
 }
 
@@ -1629,38 +1629,38 @@ PyObject *glm_${p}vec${n}_tp_richcompare(PyObject *self, PyObject *other, int op
 					PyObject *itero = PyObject_GetIter(other);
 					PyObject *iteritem;
 					PyObject *iteritemo;
-					
+
 					if(iter != NULL && itero != NULL) {
 						while(true) {
 							iteritem = PyIter_Next(iter);
 							iteritemo = PyIter_Next(itero);
-						
+
 							if(iteritem == NULL && iteritemo == NULL) {
 								Py_INCREF(Py_True);
 								return Py_True;
 							}
-						
+
 							if(iteritem == NULL || iteritemo == NULL || 1 != PyObject_RichCompareBool(iteritem, iteritemo, Py_${I[0]}))
 								break;
-							
+
 							Py_DECREF(iteritem);
 							Py_DECREF(iteritemo);
 						}
 					}
-					
+
 					Py_XDECREF(iter);
 					Py_XDECREF(itero);
 				}
-				
+
 				Py_INCREF(Py_False);
 				return Py_False;
 			}
-			
+
 			if(((glm_${p}vec${n} *)self)->vec ${I[1]} ((glm_${p}vec${n} *)other)->vec) {
 				Py_INCREF(Py_True);
 				return Py_True;
 			}
-			
+
 			Py_INCREF(Py_False);
 			return Py_False;
 /*$ $*/
@@ -1684,10 +1684,10 @@ $??{
 	x ^= _Py_HashDouble((double)((glm_${p}vec${n} *)self)->vec[${I}]) << ${int(I / n * 31)};
 /*$ $*/
 $?}
-	
+
 	if(x == -1)
 		x = -2;
-	
+
 	return x;
 }
 /*$ $*/
@@ -1717,14 +1717,14 @@ PyObject *glm_${type}_tp_iter(PyObject *self) {
 	PyObject *result;
 	PyObject *args;
 	args = Py_BuildValue("(O)", self);
-	
+
 	if(args == NULL) {
 		PyErr_SetString(PyExc_SystemError, "Invalid self.");
 		return (PyObject *) NULL;
 	}
-	
+
 	result = PyObject_CallObject((PyObject *)&glm_${type}IteratorType, args);
-	
+
 	Py_DECREF(args);
 	return result;
 }
@@ -1788,14 +1788,14 @@ $?{args
 /*$ {len(args)} $*/
 	${'PyObject *' if isinstance(args[I], str) else args[I].__name__} argument${I};
 /*$ $*/
-	
+
 	if(!PyArg_ParseTuple(args, "${''.join('f' if t == float else 'i' if t == int else 'O' for t in args)}:${func}"
 /*$ {len(args)} $*/
 	, &argument${I}
 /*$ $*/
 	))
 		return NULL;
-	
+
 /*$ {len(args)} $*/
 $?{isinstance(args[I], str)
 	if(1 != PyObject_IsInstance(argument${I}, (PyObject *)&glm_${args[I]}Type)) {
@@ -1808,7 +1808,7 @@ $?{isinstance(args[I], str)
 $?}
 /*$ $*/
 $?}
-	
+
 	glm::${p}mat${n} computed;
 	PyObject *result;
 	computed = glm${path}::${func}(glm_${p}mat${n}Data(self)
@@ -1820,9 +1820,9 @@ $??{
 $?}
 /*$ $*/
 	);
-	
+
 	result = glm_${p}mat${n}New(computed);
-	
+
 	return result;
 }
 $?}
@@ -1833,7 +1833,7 @@ $?}
 
 /*$ MATRIX_FUNCTION $*/
 PyObject *glm_function_${func}(PyObject *) {
-	
+
 	PyErr_SetString(PyExc_TypeError, "GLM functions only accept GLM types...or numbers.");
 	return NULL;
 }
@@ -1841,7 +1841,7 @@ PyObject *glm_function_${func}(PyObject *) {
 
 /*$ VECTOR_FUNCTION $*/
 PyObject *glm_function_${func}(PyObject *) {
-	
+
 	PyErr_SetString(PyExc_TypeError, "GLM functions only accept GLM types...or numbers.");
 	return NULL;
 }
@@ -1852,23 +1852,23 @@ PyObject *glm_function_${func}(PyObject *module, PyObject *args) {
 /*$ {argc + argoc} $*/
 	${type} a${I};
 /*$ $*/
-	
+
 	if(!PyArg_ParseTuple(args, "${p * argc}|${p * argoc}:${func}",
 /*$ {argc + argoc} $*/
 	&a${I}${', ' if I + 1 < argc + argoc else ''}
 /*$ $*/
 	))
 		return NULL;
-	
+
 	PyObject *result = PyObject_CallObject((PyObject *)&glm_${returns}Type, NULL);
-	
-	((glm_${returns} *)result)->${base} = 
+
+	((glm_${returns} *)result)->${base} =
 	glm${path}::${func}<${type}>(
 /*$ {argc + argoc} $*/
 	a${I}${', ' if I + 1 < argc + argoc else ''}
 /*$ $*/
 );
-	
+
 	return result;
 }
 
@@ -1922,26 +1922,26 @@ PyInit_glm()
 	PyType_Ready(&glm_${type}IteratorType);
 	PyType_Ready(&glm_${type}Type);
 /*$ $*/
-	
+
 	/* Ready Matrices */
 /*$ MATRIX $*/
 	glm_${p}mat${n}Type.tp_base = &glm_MatrixType;
 	PyType_Ready(&glm_${p}mat${n}Type);
 /*$ $*/
-	
+
 	/* Ready Vectors */
 /*$ VECTOR $*/
 	glm_${p}vec${n}Type.tp_base = &glm_VectorType;
 	PyType_Ready(&glm_${p}vec${n}Type);
 /*$ $*/
-	
+
 	PyObject* m;
 
 	m = PyModule_Create(&glmmodule);
-	
+
 	if(m == NULL)
 		return NULL;
-	
+
 	/* Add types to module */
 /*$ BASETYPEDEF $*/
 	Py_INCREF(&glm_${type}IteratorType);
@@ -1963,6 +1963,6 @@ PyInit_glm()
 /*$ VECTOR $*/
 	PyModule_AddObject(m, "${p}vec${n}", (PyObject *) &glm_${p}vec${n}Type);
 /*$ $*/
-	
+
 	return m;
 }
