@@ -1,8 +1,24 @@
 # Analysis of `glmpython` as `Parseme` Utilization
 
-## `setup.py`
 
-working `parseme` specification for `glm.perspective()`
+## Working Examples
+
+Python code for `glm.perspective()`:
+```python
+import glm
+fov = 45
+aspect_ratio = 4 / 3
+near = 0.1
+far 100
+
+m = glm.perspective(fov, aspect_ratio, near, far)
+
+assert type(m) == glm.mat4()
+
+```
+
+
+`parseme` specification for `glm.perspective()` in `setup.py`:
 ```python
 NUMBER_FUNCTION.add(
     parseme.Round(
@@ -19,65 +35,7 @@ NUMBER_FUNCTION.add(
 )
 ```
 
-`glm` source for `glm::lookAt()`
-```
-template <typename T, precision P>
-GLM_FUNC_DECL tmat4x4<T, P> lookAt(
-    tvec3<T, P> const & eye,
-    tvec3<T, P> const & center,
-    tvec3<T, P> const & up);
-```
-
-draft `parseme` specification for `glm.lookAt()`
-```python
-VECTOR3_FUNCTION.add(
-    parseme.Round(
-        func = 'lookAt',        # module function name
-        func_doc = 'Creates a view matrix.',    # docstring
-        argc = 3,               # arguments count
-        argoc = 0,              # optional arguments count
-        returns = 'mat4',       # return type
-        type = 'glm::vec3',     # argument type
-        #p = 'f',               # short name of the in type
-        base = 'mat',           # base type of the return
-        path = ''               # glm namespace path to the function
-    )
-)
-```
-
-expected C++ expansion for `glm::lookAt()`
-```
-PyObject *glm_function_lookAt(PyObject *module, PyObject *args) {
-    glm::vec3 a0;
-    glm::vec3 a1;
-    glm::vec3 a2;
-
-    if(!PyArg_ParseTuple(args, "ffff|:perspective", /* `ffff` for four float arguments,
-                                                       `|` marks the begining of optional arguments,
-                                                       `:` marks the end of format units list
-                                                       `perspective` function name to be used in error messages
-                                                    */
-    &a0,
-    &a1,
-    &a2,
-    &a3
-    ))
-        return NULL;
-
-    PyObject *result = PyObject_CallObject((PyObject *)&glm_mat4Type, NULL);
-
-    ((glm_mat4 *)result)->mat =
-    glm::perspective<float>(
-    a0,
-    a1,
-    a2,
-    a3
-);
-```
-
-## `python.parseme.cpp` and `python.cpp`
-
-working `python.parseme.cpp` source for `NUMBER_FUNCTION`
+Source for `NUMBER_FUNCTION` section in `python.parseme.cpp`:
 ```
 /*$ NUMBER_FUNCTION $*/
 PyObject *glm_function_${func}(PyObject *module, PyObject *args) {
@@ -106,7 +64,7 @@ PyObject *glm_function_${func}(PyObject *module, PyObject *args) {
 /*$ $*/
 ```
 
-expanded `python.cpp` source for `NUMBER_FUNCTION`
+and expanded code in `python.cpp`:
 ```c++
 PyObject *glm_function_perspective(PyObject *module, PyObject *args) {
     float a0;
@@ -136,20 +94,27 @@ PyObject *glm_function_perspective(PyObject *module, PyObject *args) {
 }
 ```
 
+
 ---
 
-working `python.parseme.cpp` source for `NUMBER_FUNCTION` (docstring)
+
+Source for `NUMBER_FUNCTION` (docstring) in `python.parseme.cpp`:
 ```c++
 /*$ NUMBER_FUNCTION $*/
 PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
 /*$ $*/
 ```
 
-expanded `python.cpp` source for `NUMBER_FUNCTION` (docstring)
+and expanded code in `python.cpp`:
 ```c++
+PyDoc_STRVAR(glm_function_perspective__doc__, "Creates a perspective matrix.");
 ```
 
-working `python.parseme.cpp` source for `NUMBER_FUNCTION` (module methods)
+
+---
+
+
+Source for `NUMBER_FUNCTION` (module methods) in `python.parseme.cpp`:
 ```
 static
 PyMethodDef glmmodule_methods[] = {
@@ -166,7 +131,7 @@ PyMethodDef glmmodule_methods[] = {
 };
 ```
 
-expanded `python.cpp` source for `NUMBER_FUNCTION` (module methods)
+and expanded code in `python.cpp`:
 ```c++
 static
 PyMethodDef glmmodule_methods[] = {
@@ -184,20 +149,64 @@ PyMethodDef glmmodule_methods[] = {
 ```
 
 
-## python
+## Wanted Specification
 
-working python usage example for `glm.perspective()`
+
+C++ source for `glm::lookAt()` in `glm/gtc/matrix_transform.hpp`:
+```
+template <typename T, precision P>
+GLM_FUNC_DECL tmat4x4<T, P> lookAt(
+    tvec3<T, P> const & eye,
+    tvec3<T, P> const & center,
+    tvec3<T, P> const & up);
+```
+
+
+Specification in `setup.py`:
 ```python
-import glm
-fov = 45
-aspect_ratio = 4 / 3
-near = 0.1
-far 100
+VECTOR3_FUNCTION.add(
+    parseme.Round(
+        func = 'lookAt',        # module function name
+        func_doc = 'Creates a view matrix.',    # docstring
+        argc = 3,               # arguments count
+        argoc = 0,              # optional arguments count
+        returns = 'mat4',       # return type
+        type = 'glm::vec3',     # argument type
+        #p = 'f',               # short name of the in type
+        base = 'mat',           # base type of the return
+        path = ''               # glm namespace path to the function
+    )
+)
+```
 
-m = glm.perspective(fov, aspect_ratio, near, far)
+Expected code in `python.cpp`:
+```
+PyObject *glm_function_lookAt(PyObject *module, PyObject *args) {
+    glm::vec3 a0;
+    glm::vec3 a1;
+    glm::vec3 a2;
 
-assert type(m) == glm.mat4()
+    if(!PyArg_ParseTuple(args, "ffff|:perspective", /* `ffff` for four float arguments,
+                                                       `|` marks the begining of optional arguments,
+                                                       `:` marks the end of format units list
+                                                       `perspective` function name to be used in error messages
+                                                    */
+    &a0,
+    &a1,
+    &a2,
+    &a3
+    ))
+        return NULL;
 
+    PyObject *result = PyObject_CallObject((PyObject *)&glm_mat4Type, NULL);
+
+    ((glm_mat4 *)result)->mat =
+    glm::perspective<float>(
+    a0,
+    a1,
+    a2,
+    a3
+);
 ```
 
 
