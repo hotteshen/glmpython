@@ -3,147 +3,177 @@
 
 ## Working Examples
 
-Python code for `glm.perspective()`:
+* `glm.rotate()`: `MATRIX_FUNCTION`. Chosen for deeper analysis for it's
+  proximity to the argument types of the wanted
+* `glm.perspective()`: `NUMBER_FUNCTION`. Studied first but discarded as
+  taking only `float` arguments
+
+
+### Python Use
+
 ```python
-import glm
-fov = 45
-aspect_ratio = 4 / 3
-near = 0.1
-far 100
-
-m = glm.perspective(fov, aspect_ratio, near, far)
-
-assert type(m) == glm.mat4()
-
+>>> import math, glm
+>>> m = glm.mat4().rotate(math.pi / 4, glm.vec3(1))
+>>> assert type(m) == glm.mat4()
 ```
 
 
-`parseme` specification for `glm.perspective()` in `setup.py`:
+### Specification (`setup.py`)
+
 ```python
-NUMBER_FUNCTION.add(
-    parseme.Round(
-        func = 'perspective',   # module function name
-        func_doc = 'Creates a perspective matrix.', # docstring
-        argc = 4,               # arguments count
-        argoc = 0,              # optional arguments count
-        returns = 'mat4',       # return type
-        type = 'float',         # argument type
-        p = 'f',                # short name of the in type
-        base = 'mat',           # base type of the return
-        path = ''               # glm namespace path to the function
-    )
-)
+MATRIX_FUNCTION.add(parseme.Round(
+    func = 'rotate',
+    func_doc = 'Rotates a 4x4 matrix.',
+    args = (float, 'vec3',),
+    availableTo = ('4',),
+    path = ''
+))
 ```
 
-Source for `NUMBER_FUNCTION` section in `python.parseme.cpp`:
-```
-/*$ NUMBER_FUNCTION $*/
-PyObject *glm_function_${func}(PyObject *module, PyObject *args) {
-/*$ {argc + argoc} $*/
-    ${type} a${I};
+
+### Source (`python.parseme.cpp`) and Expanded (`python.cpp`)
+
+
+#### `/* * * Matrix Functions * * */` section
+
+Source in `python.parseme.cpp`:
+```c++
+/*$ MATRIX_FUNCTION $*/
+$?{availableTo == 'all' or n in availableTo
+static
+PyObject *glm_${p}mat${n}_function_${func}(PyObject *self, PyObject *args) {
+$?{args
+/*$ {len(args)} $*/
+    ${'PyObject *' if isinstance(args[I], str) else args[I].__name__} argument${I};
 /*$ $*/
 
-    if(!PyArg_ParseTuple(args, "${p * argc}|${p * argoc}:${func}",
-/*$ {argc + argoc} $*/
-    &a${I}${', ' if I + 1 < argc + argoc else ''}
+    if(!PyArg_ParseTuple(args, "${''.join('f' if t == float else 'i' if t == int else 'O' for t in args)}:${func}"
+/*$ {len(args)} $*/
+    , &argument${I}
 /*$ $*/
     ))
         return NULL;
 
-    PyObject *result = PyObject_CallObject((PyObject *)&glm_${returns}Type, NULL);
-
-    ((glm_${returns} *)result)->${base} =
-    glm${path}::${func}<${type}>(
-/*$ {argc + argoc} $*/
-    a${I}${', ' if I + 1 < argc + argoc else ''}
+/*$ {len(args)} $*/
+$?{isinstance(args[I], str)
+    if(1 != PyObject_IsInstance(argument${I}, (PyObject *)&glm_${args[I]}Type)) {
+        std::stringstream ss;
+        ss << "Argument ${I + 1} must be of type '${'glm.' + args[I] if isinstance(args[I], str) else args[I].__name__}' not '" << Py_TYPE(argument${I})->tp_name << "'.";
+        std::string s = ss.str();
+        PyErr_SetString(PyExc_TypeError, s.c_str());
+        return NULL;
+    }
+$?}
 /*$ $*/
-);
+$?}
+
+    glm::${p}mat${n} computed;
+    PyObject *result;
+    computed = glm${path}::${func}(glm_${p}mat${n}Data(self)
+/*$ {len(args)} $*/
+$?{isinstance(args[I], str)
+    , glm_${args[I]}Data(argument${I})
+$??{
+    , argument${I}
+$?}
+/*$ $*/
+    );
+
+    result = glm_${p}mat${n}New(computed);
 
     return result;
 }
+$?}
 /*$ $*/
 ```
 
 and expanded code in `python.cpp`:
 ```c++
-PyObject *glm_function_perspective(PyObject *module, PyObject *args) {
-    float a0;
-    float a1;
-    float a2;
-    float a3;
+static
+PyObject *glm_mat4_function_rotate(PyObject *self, PyObject *args) {
+    float argument0;
+    PyObject * argument1;
 
-    if(!PyArg_ParseTuple(args, "ffff|:perspective",
-    &a0,
-    &a1,
-    &a2,
-    &a3
+    if(!PyArg_ParseTuple(args, "fO:rotate"
+    , &argument0
+    , &argument1
     ))
         return NULL;
 
-    PyObject *result = PyObject_CallObject((PyObject *)&glm_mat4Type, NULL);
+    if(1 != PyObject_IsInstance(argument1, (PyObject *)&glm_vec3Type)) {
+        std::stringstream ss;
+        ss << "Argument 2 must be of type 'glm.vec3' not '" << Py_TYPE(argument1)->tp_name << "'.";
+        std::string s = ss.str();
+        PyErr_SetString(PyExc_TypeError, s.c_str());
+        return NULL;
+    }
 
-    ((glm_mat4 *)result)->mat =
-    glm::perspective<float>(
-    a0,
-    a1,
-    a2,
-    a3
-);
+    glm::mat4 computed;
+    PyObject *result;
+    computed = glm::rotate(glm_mat4Data(self)
+    , argument0
+    , glm_vec3Data(argument1)
+    );
+
+    result = glm_mat4New(computed);
 
     return result;
 }
 ```
 
 
----
+#### `/* * * Functions * * */` section
 
-
-Source for `NUMBER_FUNCTION` (docstring) in `python.parseme.cpp`:
+Source in `python.parseme.cpp`:
 ```c++
-/*$ NUMBER_FUNCTION $*/
+/*$ MATRIX_FUNCTION $*/
+PyObject *glm_function_${func}(PyObject *) {
+    PyErr_SetString(PyExc_TypeError, "GLM functions only accept GLM types...or numbers.");
+    return NULL;
+}
+```
+
+and expanded code in `python.cpp`:
+```c++
+PyObject *glm_function_rotate(PyObject *) {
+    PyErr_SetString(PyExc_TypeError, "GLM functions only accept GLM types...or numbers.");
+    return NULL;
+}
+```
+
+
+#### `/* * * GLM Module * * */` section
+
+Source in `python.parseme.cpp`:
+```
+/*$ MATRIX_FUNCTION $*/
 PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
 /*$ $*/
-```
 
-and expanded code in `python.cpp`:
-```c++
-PyDoc_STRVAR(glm_function_perspective__doc__, "Creates a perspective matrix.");
-```
-
-
----
-
-
-Source for `NUMBER_FUNCTION` (module methods) in `python.parseme.cpp`:
-```
 static
 PyMethodDef glmmodule_methods[] = {
-/*$ VECTOR_FUNCTION $*/
-    {"${func}", (PyCFunction) glm_function_${func}, METH_O, glm_function_${func}__doc__},
-/*$ $*/
+    // ...
 /*$ MATRIX_FUNCTION $*/
     {"${func}", (PyCFunction) glm_function_${func}, METH_VARARGS, glm_function_${func}__doc__},
 /*$ $*/
-/*$ NUMBER_FUNCTION $*/
-    {"${func}", (PyCFunction) glm_function_${func}, METH_VARARGS, glm_function_${func}__doc__},
-/*$ $*/
+    // ...
     {NULL, NULL},
 };
 ```
 
 and expanded code in `python.cpp`:
 ```c++
+/* * * GLM Module * * */
+
+PyDoc_STRVAR(glm_function_rotate__doc__, "Rotates a 4x4 matrix.");
+
+// ...
+
 static
 PyMethodDef glmmodule_methods[] = {
-    {"abs", (PyCFunction) glm_function_abs, METH_O, glm_function_abs__doc__},
-    {"translate", (PyCFunction) glm_function_translate, METH_VARARGS, glm_function_translate__doc__},
-    {"rotate", (PyCFunction) glm_function_rotate, METH_VARARGS, glm_function_rotate__doc__},
-    {"scale", (PyCFunction) glm_function_scale, METH_VARARGS, glm_function_scale__doc__},
-    {"inverse", (PyCFunction) glm_function_inverse, METH_VARARGS, glm_function_inverse__doc__},
-    {"ortho", (PyCFunction) glm_function_ortho, METH_VARARGS, glm_function_ortho__doc__},
-    {"frustum", (PyCFunction) glm_function_frustum, METH_VARARGS, glm_function_frustum__doc__},
+    // ...
     {"perspective", (PyCFunction) glm_function_perspective, METH_VARARGS, glm_function_perspective__doc__},
-    {"perspectiveFov", (PyCFunction) glm_function_perspectiveFov, METH_VARARGS, glm_function_perspectiveFov__doc__},
+    // ...
     {NULL, NULL},
 };
 ```
