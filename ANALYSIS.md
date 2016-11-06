@@ -192,28 +192,27 @@ GLM_FUNC_DECL tmat4x4<T, P> lookAt(
 ```
 
 
-Specification in `setup.py` (modeled after `NUMBER_FUNCTION` section):
+Specification in `setup.py` (modeled after `MATRIX_FUNCTION` section):
 ```python
-HOMOARGS_FUNCTION.add(
+EXTRA_FUNCTION.add(
     parseme.Round(
-        func = 'lookAt',        # module function name
-        func_doc = 'Creates a look at view matrix.',# docstring
-        argc = 3,               # arguments count
-        argoc = 0,
-        returns = 'mat4'
-        type = 'vec3'           # arguments
-        p = 'O'
+        func = 'lookAt',
+        func_doc = 'Creates a look at view matrix.',
+        args = ('vec3', 'vec3', 'vec3'),
+        availableTo = ('4',),
+        type = 'float',
+        path = ''
     )
 )
 ```
 
 Expected code in `python.cpp`:
-```
+```c++
 static
-PyObject *glm_function_lookAt(PyObject *self, PyObject *args) {
-    PyObject *argument0;
-    PyObject *argument1;
-    PyObject *argument2;
+PyObject *glm_function_lookAt(PyObject *module, PyObject *args) {
+    PyObject * argument0;
+    PyObject * argument1;
+    PyObject * argument2;
 
     if(!PyArg_ParseTuple(args, "OOO:lookAt"
     , &argument0
@@ -224,34 +223,37 @@ PyObject *glm_function_lookAt(PyObject *self, PyObject *args) {
 
     if(1 != PyObject_IsInstance(argument0, (PyObject *)&glm_vec3Type)) {
         std::stringstream ss;
-        ss << "Argument 0 must be of type 'glm.vec3' not '" << Py_TYPE(argument0)->tp_name << "'.";
+        ss << "Argument 1 must be of type 'glm.vec3' not '" << Py_TYPE(argument0)->tp_name << "'.";
         std::string s = ss.str();
         PyErr_SetString(PyExc_TypeError, s.c_str());
         return NULL;
     }
     if(1 != PyObject_IsInstance(argument1, (PyObject *)&glm_vec3Type)) {
         std::stringstream ss;
-        ss << "Argument 1 must be of type 'glm.vec3' not '" << Py_TYPE(argument1)->tp_name << "'.";
+        ss << "Argument 2 must be of type 'glm.vec3' not '" << Py_TYPE(argument1)->tp_name << "'.";
         std::string s = ss.str();
         PyErr_SetString(PyExc_TypeError, s.c_str());
         return NULL;
     }
     if(1 != PyObject_IsInstance(argument2, (PyObject *)&glm_vec3Type)) {
         std::stringstream ss;
-        ss << "Argument 2 must be of type 'glm.vec3' not '" << Py_TYPE(argument2)->tp_name << "'.";
+        ss << "Argument 3 must be of type 'glm.vec3' not '" << Py_TYPE(argument2)->tp_name << "'.";
         std::string s = ss.str();
         PyErr_SetString(PyExc_TypeError, s.c_str());
         return NULL;
     }
 
     glm::mat4 computed;
-    computed = glm::lookAt(
-    , glm_vec3Data(argument0)
-    , glm_vec3Data(argument1)
-    , glm_vec3Data(argument2)
+    PyObject *result;
+    computed = glm::lookAt<float>(
+    glm_vec3Data(argument0), 
+    glm_vec3Data(argument1), 
+    glm_vec3Data(argument2)
     );
 
-    return glm_mat4New(computed);
+    result = glm_mat4New(computed);
+
+    return result;
 }
 ```
 

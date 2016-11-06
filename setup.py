@@ -32,7 +32,7 @@ glmParse.add(VECTOR_MATH)
 # p is a prefix to the name
 # cols and rows is the size of the vector
 # type is the common type of the vector
-# n is is the name, such as 3x4
+# n is the name, such as 3x4
 MATRIX = parseme.Section('MATRIX')
 for cols in range(2, 5):
 	for rows in range(2, 5):
@@ -160,6 +160,30 @@ NUMBER_FUNCTION.add(
 )
 
 glmParse.add(NUMBER_FUNCTION)
+
+# In the EXTRA_FUNCTION section,
+# func is the name of the function
+# func_doc is the doc string
+# args is the type of arguments
+# availableTo is which types support it
+# type is the argument type (from the MATRIX section)
+# p is the short name of the in type, used to build value
+# path is the path to the function, i.e.
+EXTRA_FUNCTION = parseme.Section('EXTRA_FUNCTION')
+
+EXTRA_FUNCTION.add(
+	parseme.Round(
+		func = 'lookAt',
+		func_doc = 'Creates a look at view matrix.',
+        args = ('vec3', 'vec3', 'vec3'),
+		availableTo = ('4',),
+		type = 'float',
+		path = ''
+	)
+)
+
+glmParse.add(EXTRA_FUNCTION)
+
 
 BASETYPEDEF = parseme.Section('BASETYPEDEF')
 BASETYPEDEF.add(parseme.Round(type = 'Vector', doc = 'This is a basic vector type that you can isinstance against.  It is also used for global function checking, and in theory you could make your own vector types which define custom calls for global functions.'))
