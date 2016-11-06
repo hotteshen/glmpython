@@ -1874,6 +1874,48 @@ PyObject *glm_function_${func}(PyObject *module, PyObject *args) {
 
 /*$ $*/
 
+/*$ EXTRA_FUNCTION $*/
+static
+PyObject *glm_function_${func}(PyObject *module, PyObject *args) {
+$?{args
+/*$ {len(args)} $*/
+	${'PyObject *' if isinstance(args[I], str) else args[I].__name__} argument${I};
+/*$ $*/
+
+	if(!PyArg_ParseTuple(args, "${''.join('f' if t == float else 'i' if t == int else 'O' for t in args)}:${func}"
+/*$ {len(args)} $*/
+	, &argument${I}
+/*$ $*/
+	))
+		return NULL;
+
+/*$ {len(args)} $*/
+$?{isinstance(args[I], str)
+	if(1 != PyObject_IsInstance(argument${I}, (PyObject *)&glm_${args[I]}Type)) {
+		std::stringstream ss;
+		ss << "Argument ${I + 1} must be of type '${'glm.' + args[I] if isinstance(args[I], str) else args[I].__name__}' not '" << Py_TYPE(argument${I})->tp_name << "'.";
+		std::string s = ss.str();
+		PyErr_SetString(PyExc_TypeError, s.c_str());
+		return NULL;
+	}
+$?}
+/*$ $*/
+$?}
+
+	glm::${returns} computed;
+	PyObject *result;
+	computed = glm${path}::${func}<${type}>(
+/*$ {len(args)} $*/
+	glm_${args[I]}Data(argument${I})${',' if I + 1 < len(args) else ''}
+/*$ $*/
+	);
+
+	result = glm_${returns}New(computed);
+
+	return result;
+}
+/*$ $*/ // EXTRA_FUNCTION
+
 /* * * GLM Module * * */
 
 /*$ VECTOR_FUNCTION $*/
@@ -1888,6 +1930,10 @@ PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
 PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
 /*$ $*/
 
+/*$ EXTRA_FUNCTION $*/
+PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
+/*$ $*/
+
 static
 PyMethodDef glmmodule_methods[] = {
 /*$ VECTOR_FUNCTION $*/
@@ -1897,6 +1943,9 @@ PyMethodDef glmmodule_methods[] = {
 	{"${func}", (PyCFunction) glm_function_${func}, METH_VARARGS, glm_function_${func}__doc__},
 /*$ $*/
 /*$ NUMBER_FUNCTION $*/
+	{"${func}", (PyCFunction) glm_function_${func}, METH_VARARGS, glm_function_${func}__doc__},
+/*$ $*/
+/*$ EXTRA_FUNCTION $*/
 	{"${func}", (PyCFunction) glm_function_${func}, METH_VARARGS, glm_function_${func}__doc__},
 /*$ $*/
 	{NULL, NULL},

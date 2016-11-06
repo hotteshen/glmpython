@@ -32,7 +32,7 @@ glmParse.add(VECTOR_MATH)
 # p is a prefix to the name
 # cols and rows is the size of the vector
 # type is the common type of the vector
-# n is is the name, such as 3x4
+# n is the name, such as 3x4
 MATRIX = parseme.Section('MATRIX')
 for cols in range(2, 5):
 	for rows in range(2, 5):
@@ -78,7 +78,6 @@ MATRIX_FUNCTION.add(parseme.Round(
 	func = 'inverse',
 	func_doc = 'Matrix\'s inverse.',
 	args = (),
-	argsT = '',
 	availableTo = ('2','3','4',),
 	path = ''
 ))
@@ -161,6 +160,51 @@ NUMBER_FUNCTION.add(
 )
 
 glmParse.add(NUMBER_FUNCTION)
+
+# In the EXTRA_FUNCTION section,
+# func is the name of the function
+# func_doc is the doc string
+# args is the type of arguments
+# returns is the return type
+# type is the common type of the matrix and vector
+# path is the path to the function, i.e.
+EXTRA_FUNCTION = parseme.Section('EXTRA_FUNCTION')
+
+EXTRA_FUNCTION.add(
+	parseme.Round(
+		func = 'lookAt',
+		func_doc = 'Creates a look at view matrix.',
+        args = ('vec3', 'vec3', 'vec3'),
+		returns = 'mat4',
+		type = 'float',
+		path = ''
+	)
+)
+
+EXTRA_FUNCTION.add(
+	parseme.Round(
+		func = 'project',
+		func_doc = 'Map object coordinates into window coordinates.',
+        args = ('vec3', 'mat4', 'mat4', 'vec4'),
+		returns = 'vec3',
+		type = 'float',
+		path = ''
+	)
+)
+
+EXTRA_FUNCTION.add(
+	parseme.Round(
+		func = 'unProject',
+		func_doc = 'Map window coordinates into object coordinates.',
+        args = ('vec3', 'mat4', 'mat4', 'vec4'),
+		returns = 'vec3',
+		type = 'float',
+		path = ''
+	)
+)
+
+glmParse.add(EXTRA_FUNCTION)
+
 
 BASETYPEDEF = parseme.Section('BASETYPEDEF')
 BASETYPEDEF.add(parseme.Round(type = 'Vector', doc = 'This is a basic vector type that you can isinstance against.  It is also used for global function checking, and in theory you could make your own vector types which define custom calls for global functions.'))
