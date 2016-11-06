@@ -1874,6 +1874,53 @@ PyObject *glm_function_${func}(PyObject *module, PyObject *args) {
 
 /*$ $*/
 
+static
+PyObject *glm_function_lookAt(PyObject *self, PyObject *args) {
+    PyObject *argument0;
+    PyObject *argument1;
+    PyObject *argument2;
+
+    if(!PyArg_ParseTuple(args, "OOO:lookAt"
+    , &argument0
+    , &argument1
+    , &argument2
+    ))
+        return NULL;
+
+    if(1 != PyObject_IsInstance(argument0, (PyObject *)&glm_vec3Type)) {
+        std::stringstream ss;
+        ss << "Argument 0 must be of type 'glm.vec3' not '" << Py_TYPE(argument0)->tp_name << "'.";
+        std::string s = ss.str();
+        PyErr_SetString(PyExc_TypeError, s.c_str());
+        return NULL;
+    }
+    if(1 != PyObject_IsInstance(argument1, (PyObject *)&glm_vec3Type)) {
+        std::stringstream ss;
+        ss << "Argument 1 must be of type 'glm.vec3' not '" << Py_TYPE(argument1)->tp_name << "'.";
+        std::string s = ss.str();
+        PyErr_SetString(PyExc_TypeError, s.c_str());
+        return NULL;
+    }
+    if(1 != PyObject_IsInstance(argument2, (PyObject *)&glm_vec3Type)) {
+        std::stringstream ss;
+        ss << "Argument 2 must be of type 'glm.vec3' not '" << Py_TYPE(argument2)->tp_name << "'.";
+        std::string s = ss.str();
+        PyErr_SetString(PyExc_TypeError, s.c_str());
+        return NULL;
+    }
+
+    glm::mat4 computed;
+    computed = glm::lookAt(
+    glm_vec3Data(argument0)
+    , glm_vec3Data(argument1)
+    , glm_vec3Data(argument2)
+    );
+
+    return glm_mat4New(computed);
+}
+
+PyDoc_STRVAR(glm_function_lookAt__doc__, "Creates a look at view matrix.");
+
 /* * * GLM Module * * */
 
 /*$ VECTOR_FUNCTION $*/
@@ -1899,6 +1946,7 @@ PyMethodDef glmmodule_methods[] = {
 /*$ NUMBER_FUNCTION $*/
 	{"${func}", (PyCFunction) glm_function_${func}, METH_VARARGS, glm_function_${func}__doc__},
 /*$ $*/
+	{"lookAt", (PyCFunction) glm_function_lookAt, METH_VARARGS, glm_function_lookAt__doc__},
 	{NULL, NULL},
 };
 
