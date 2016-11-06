@@ -192,18 +192,17 @@ GLM_FUNC_DECL tmat4x4<T, P> lookAt(
 ```
 
 
-Specification in `setup.py`:
+Specification in `setup.py` (modeled after `NUMBER_FUNCTION` section):
 ```python
-VECTOR3_FUNCTION.add(
+HOMOARGS_FUNCTION.add(
     parseme.Round(
         func = 'lookAt',        # module function name
-        func_doc = 'Creates a look at view matrix.',    # docstring
+        func_doc = 'Creates a look at view matrix.',# docstring
         argc = 3,               # arguments count
-        argoc = 0,              # optional arguments count
-        returns = 'mat4',       # return type
-        type = 'vec3',          # argument type
-        base = 'mat',           # base type of the return
-        path = ''               # glm namespace path to the function
+        argoc = 0,
+        returns = 'mat4'
+        type = 'vec3'           # arguments
+        p = 'O'
     )
 )
 ```
