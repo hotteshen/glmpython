@@ -1874,9 +1874,7 @@ PyObject *glm_function_${func}(PyObject *module, PyObject *args) {
 
 /*$ $*/
 
-/*$ MATRIX $*/
 /*$ EXTRA_FUNCTION $*/
-$?{availableTo == 'all' or n in availableTo
 static
 PyObject *glm_function_${func}(PyObject *module, PyObject *args) {
 $?{args
@@ -1916,9 +1914,7 @@ $?}
 
 	return result;
 }
-$?}
 /*$ $*/ // EXTRA_FUNCTION
-/*$ $*/ // MATRIX
 
 /* * * GLM Module * * */
 

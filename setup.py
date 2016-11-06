@@ -165,9 +165,8 @@ glmParse.add(NUMBER_FUNCTION)
 # func is the name of the function
 # func_doc is the doc string
 # args is the type of arguments
-# availableTo is which types support it
-# type is the argument type (from the MATRIX section)
-# p is the short name of the in type, used to build value
+# returns is the return type
+# type is the common type of the matrix and vector
 # path is the path to the function, i.e.
 EXTRA_FUNCTION = parseme.Section('EXTRA_FUNCTION')
 
@@ -177,7 +176,6 @@ EXTRA_FUNCTION.add(
 		func_doc = 'Creates a look at view matrix.',
         args = ('vec3', 'vec3', 'vec3'),
 		returns = 'mat4',
-		availableTo = ('4',),
 		type = 'float',
 		path = ''
 	)
@@ -189,7 +187,17 @@ EXTRA_FUNCTION.add(
 		func_doc = 'Map object coordinates into window coordinates.',
         args = ('vec3', 'mat4', 'mat4', 'vec4'),
 		returns = 'vec3',
-		availableTo = ('4',),
+		type = 'float',
+		path = ''
+	)
+)
+
+EXTRA_FUNCTION.add(
+	parseme.Round(
+		func = 'unProject',
+		func_doc = 'Map window coordinates into object coordinates.',
+        args = ('vec3', 'mat4', 'mat4', 'vec4'),
+		returns = 'vec3',
 		type = 'float',
 		path = ''
 	)
