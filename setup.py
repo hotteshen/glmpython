@@ -176,6 +176,19 @@ EXTRA_FUNCTION.add(
 		func = 'lookAt',
 		func_doc = 'Creates a look at view matrix.',
         args = ('vec3', 'vec3', 'vec3'),
+		returns = 'mat4',
+		availableTo = ('4',),
+		type = 'float',
+		path = ''
+	)
+)
+
+EXTRA_FUNCTION.add(
+	parseme.Round(
+		func = 'project',
+		func_doc = 'Map object coordinates into window coordinates.',
+        args = ('vec3', 'mat4', 'mat4', 'vec4'),
+		returns = 'vec3',
 		availableTo = ('4',),
 		type = 'float',
 		path = ''

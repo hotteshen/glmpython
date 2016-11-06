@@ -1904,7 +1904,7 @@ $?}
 /*$ $*/
 $?}
 
-	glm::${p}mat${n} computed;
+	glm::${returns} computed;
 	PyObject *result;
 	computed = glm${path}::${func}<${type}>(
 /*$ {len(args)} $*/
@@ -1912,7 +1912,7 @@ $?}
 /*$ $*/
 	);
 
-	result = glm_${p}mat${n}New(computed);
+	result = glm_${returns}New(computed);
 
 	return result;
 }
