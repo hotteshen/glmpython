@@ -81,6 +81,14 @@ MATRIX_FUNCTION.add(parseme.Round(
 	availableTo = ('2','3','4',),
 	path = ''
 ))
+MATRIX_FUNCTION.add(parseme.Round(
+	func = 'transpose',
+	func_doc = 'Matrix\'s transpose.',
+	args = (),
+	# availableTo = ('2','3','4','2x3','3x2','2x4','4x2','3x4','4x3'),
+	availableTo = ('2','3','4'),
+	path = ''
+))
 
 glmParse.add(MATRIX_FUNCTION)
 
@@ -100,7 +108,7 @@ glmParse.add(VECTOR_FUNCTION)
 # type is the argument type
 # p is the short name of the in type, used to build value
 # base the base type of the return
-# path is the path to the function, i.e. 
+# path is the path to the function, i.e.
 NUMBER_FUNCTION = parseme.Section('NUMBER_FUNCTION')
 
 NUMBER_FUNCTION.add(
@@ -116,7 +124,6 @@ NUMBER_FUNCTION.add(
 		path = ''
 	)
 )
-
 NUMBER_FUNCTION.add(
 	parseme.Round(
 		func = 'frustum',
@@ -130,7 +137,6 @@ NUMBER_FUNCTION.add(
 		path = ''
 	)
 )
-
 NUMBER_FUNCTION.add(
 	parseme.Round(
 		func = 'perspective',
@@ -144,7 +150,6 @@ NUMBER_FUNCTION.add(
 		path = ''
 	)
 )
-
 NUMBER_FUNCTION.add(
 	parseme.Round(
 		func = 'perspectiveFov',
@@ -180,7 +185,6 @@ EXTRA_FUNCTION.add(
 		path = ''
 	)
 )
-
 EXTRA_FUNCTION.add(
 	parseme.Round(
 		func = 'project',
@@ -191,7 +195,6 @@ EXTRA_FUNCTION.add(
 		path = ''
 	)
 )
-
 EXTRA_FUNCTION.add(
 	parseme.Round(
 		func = 'unProject',
