@@ -78,7 +78,6 @@ MATRIX_FUNCTION.add(parseme.Round(
 	func = 'inverse',
 	func_doc = 'Matrix\'s inverse.',
 	args = (),
-	argsT = '',
 	availableTo = ('2','3','4',),
 	path = ''
 ))
