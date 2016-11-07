@@ -1,5 +1,52 @@
 # Analysis of `glmpython` as `Parseme` Utilization
 
+## Adding Quaternion Support
+
+### Analysis of `python.parseme.cpp`
+
+`/* * * ... * * */` sections and (guessed) usage:
+
+* `Header`
+    + `MATRIX` - `${p}mat${n}`
+    + `VECTOR` - `${p}vec${n}`
+        - `VECTOR_MATH`
+* `Types`
+    + `MATRIX`
+        - `${p}mat${n} Methods` - `MATRIX_FUNCTION`
+        - `${p}mat${n} Object`
+    + `VECTOR`
+        - `${p}mat${n} Methods` - `VECTOR_FUNCTION`
+        - `${p}vec${n} Object`
+* `${type} Iterator` ~ `BASETYPEDEF` section: `Vector`/`Matrix`-`Iterator`s
+* `${p}mat${n}` ~ `MATRIX`: `mat{234}[x{234}]`
+    + `${p}mat${n}: Numbers`
+    + `${p}mat${n}: Sequence`
+* `${p}vec${n}` ~ `VECTOR`: `[i]vec{234}`
+    + `${p}vec${n}: Numbers`
+        - `VECTOR_MATH`
+    + `${p}vec${n}: Sequence`
+* `New`
+    + `MATRIX`
+    + `VECTOR`
+* `${type}` ~ `BASETYPEDEF`: `Vector`, `Matrix`
+    + `${type} Definition`
+* `Matrix Functions`: `mat4` methods
+    + `MATRIX`
+        + `MATRIX_FUNCTION`
+* `Functions`: module methods definitions
+    + `MATRIX_FUNCTION`
+    + `VECTOR_FUNCTION`
+    + `NUMBER_FUNCTION`
+    + `EXTRA_FUNCTION`
+* `GLM Module`: module methods declaration for Python ^ C interface (docstring, etc.)
+    + `VECTOR_FUNCTION`
+    + `MATRIX_FUNCTION`
+    + `NUMBER_FUNCTION`
+    + `EXTRA_FUNCTION`
+    + `BASETYPEDEF`
+    + `MATRIX`
+    + `VECTOR`
+
 
 ## Working Examples
 
