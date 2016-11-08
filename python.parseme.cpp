@@ -60,7 +60,7 @@ $?{type == 'int'
 static PyObject *glm_${p}${vectorquat}${m}_nb_invert(PyObject *);
 $?}
 
-$?{type == 'float'
+$?{type == 'float' and vectorquat == 'vec'
 static PyObject *glm_${p}${vectorquat}${m}_nb_floor_divide(PyObject *, PyObject *);
 static PyObject *glm_${p}${vectorquat}${m}_nb_inplace_floor_divide(PyObject *, PyObject *);
 $?}
@@ -275,14 +275,18 @@ $??{type == 'float'
 $?}
 $?{type == 'int'
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_true_divide,
-$??{type == 'float'
+$??{type == 'float' and vectorquat == 'vec'
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_floor_divide,
+$??{
+	NULL,
 $?}
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_true_divide,
 $?{type == 'int'
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_true_divide,
-$??{type == 'float'
+$??{type == 'float' and vectorquat == 'vec'
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_floor_divide,
+$??{
+	NULL,
 $?}
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_true_divide,
 
@@ -1239,7 +1243,7 @@ PyObject *glm_${p}${vectorquat}${m}_nb_invert(PyObject *self) {
 }
 $?}
 
-$?{type == 'float'
+$?{type == 'float' and vectorquat == 'vec'
 static
 PyObject *glm_${p}${vectorquat}${m}_nb_floor_divide(PyObject *self, PyObject *other) {
 	PyObject *result;
@@ -1272,7 +1276,7 @@ $?}
 }
 $?}
 
-$?{type == 'float'
+$?{type == 'float' and vectorquat == 'vec'
 static
 PyObject *glm_${p}${vectorquat}${m}_nb_inplace_floor_divide(PyObject *self, PyObject *other) {
 	if(PyNumber_Check(other))
