@@ -1020,28 +1020,39 @@ PyObject *glm_${p}${vectorquat}${m}_nb_${f}(PyObject *self, PyObject *other) {
 	PyObject *result;
 	if(PyNumber_Check(other)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
+$?{s == '*' or s == '/' or vectorquat == 'vec'
+
 $?{type == 'int'
 		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = ((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s} (int)PyLong_AsLong(other);
 $??{type == 'float'
 		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = ((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s} (float)PyFloat_AsDouble(other);
 $?}
+
+$?}
 	}
 	else if(PyNumber_Check(self) && 1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(other), NULL);
+$?{s == '*' or vectorquat == 'vec'
+
 $?{type == 'int'
 		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = (int)PyLong_AsLong(self) ${s} ((glm_${p}${vectorquat}${m} *)other)->${vectorquat};
 $??{type == 'float'
 		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = (float)PyFloat_AsDouble(self) ${s} ((glm_${p}${vectorquat}${m} *)other)->${vectorquat};
 $?}
+
+$?}
 	}
 	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
+$?{s == '+' or s == '*' or vectorquat == 'vec'
 		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = ((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s} ((glm_${p}${vectorquat}${m} *)other)->${vectorquat};
+$?}
 	}
 $?{not only
 	else if(PyIter_Check(other) || Py_TYPE(other)->tp_iter) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
 
+$?{s == '+' or s == '*' or vectorquat == 'vec'
 		PyObject *convert;
 		PyObject *args = Py_BuildValue("(O)", other);
 		convert = PyObject_CallObject((PyObject *)Py_TYPE(self), args);
@@ -1050,6 +1061,7 @@ $?{not only
 		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = ((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s} ((glm_${p}${vectorquat}${m} *)convert)->${vectorquat};
 
 		Py_DECREF(convert);
+$?}
 	}
 $?}
 	else {
