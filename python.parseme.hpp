@@ -16,17 +16,17 @@ typedef struct {
 } glm_${type};
 
 /*$ $*/
-/*$ VECTOR $*/
+/*$ VECTORQUAT $*/
 
 typedef struct {
 	glm_Vector vector;
-	glm::${p}vec${n} vec;
-} glm_${p}vec${n};
+	glm::${p}${vectorquat}${m} ${vectorquat};
+} glm_${p}${vectorquat}${m};
 
-#define glm_${p}vec${n}Data(o) \
-	((glm_${p}vec${n} *)o)->vec
+#define glm_${p}${vectorquat}${m}Data(o) \
+	((glm_${p}${vectorquat}${m} *)o)->${vectorquat}
 
-PyObject *glm_${p}vec${n}New(glm::${p}vec${n});
+PyObject *glm_${p}${vectorquat}${m}New(glm::${p}${vectorquat}${m});
 /*$ $*/
 /*$ MATRIX $*/
 

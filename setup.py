@@ -4,16 +4,21 @@ import parseme
 
 glmParse = parseme.Project()
 
-# In the VECTOR section,
+# In the VECTORQUAT section,
 # p is a prefix to the name
 # n is the number of components in the vector
 # type is the common type of the vector
 # Make sure to include all three of a type because swizzling relies on them
-VECTOR = parseme.Section('VECTOR')
+VECTORQUAT = parseme.Section('VECTORQUAT')
+
+# vectors
 for t in (('', 'float'), ('i', 'int')):
 	for n in range(2, 5):
-		VECTOR.add(parseme.Round(p = t[0], n = n, type = t[1]))
-glmParse.add(VECTOR)
+		VECTORQUAT.add(parseme.Round(vectorquat='vec', p = t[0], n = n, m = str(n), type = t[1]))
+# quaternion
+VECTORQUAT.add(parseme.Round(vectorquat='quat', p = '', n = 4, m = '', type = 'float'))
+
+glmParse.add(VECTORQUAT)
 
 VECTOR_MATH = parseme.Section('VECTOR_MATH')
 VECTOR_MATH.add(parseme.Round(s = '+', f = 'add', only = None))
@@ -212,6 +217,7 @@ glmParse.add(EXTRA_FUNCTION)
 BASETYPEDEF = parseme.Section('BASETYPEDEF')
 BASETYPEDEF.add(parseme.Round(type = 'Vector', doc = 'This is a basic vector type that you can isinstance against.  It is also used for global function checking, and in theory you could make your own vector types which define custom calls for global functions.'))
 BASETYPEDEF.add(parseme.Round(type = 'Matrix', doc = 'A matrix.'))
+BASETYPEDEF.add(parseme.Round(type = 'Quaternion', doc = 'This is a quaternion type that you can isinstance against.  It is also used for global function checking, and in theory you could make your own quaternion types which define custom calls for global functions.'))
 glmParse.add(BASETYPEDEF)
 
 if glmParse.parse('python.parseme.hpp', 'python.parseme.cpp') > 0:
