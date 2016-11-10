@@ -20,18 +20,18 @@ VECTORQUAT.add(parseme.Round(vectorquat='quat', p = '', n = 4, m = '', type = 'f
 
 glmParse.add(VECTORQUAT)
 
-VECTOR_MATH = parseme.Section('VECTOR_MATH')
-VECTOR_MATH.add(parseme.Round(s = '+', f = 'add', only = None))
-VECTOR_MATH.add(parseme.Round(s = '-', f = 'subtract', only = None))
-VECTOR_MATH.add(parseme.Round(s = '*', f = 'multiply', only = None))
-VECTOR_MATH.add(parseme.Round(s = '/', f = 'true_divide', only = None))
-VECTOR_MATH.add(parseme.Round(s = '<<', f = 'lshift', only = 'int'))
-VECTOR_MATH.add(parseme.Round(s = '>>', f = 'rshift', only = 'int'))
-VECTOR_MATH.add(parseme.Round(s = '&', f = 'and', only = 'int'))
-VECTOR_MATH.add(parseme.Round(s = '^', f = 'xor', only = 'int'))
-VECTOR_MATH.add(parseme.Round(s = '|', f = 'or', only = 'int'))
+VECTORQUAT_MATH = parseme.Section('VECTORQUAT_MATH')
+VECTORQUAT_MATH.add(parseme.Round(s = '+', f = 'add', only = None))
+VECTORQUAT_MATH.add(parseme.Round(s = '-', f = 'subtract', only = None))
+VECTORQUAT_MATH.add(parseme.Round(s = '*', f = 'multiply', only = None))
+VECTORQUAT_MATH.add(parseme.Round(s = '/', f = 'true_divide', only = None))
+VECTORQUAT_MATH.add(parseme.Round(s = '<<', f = 'lshift', only = 'int'))
+VECTORQUAT_MATH.add(parseme.Round(s = '>>', f = 'rshift', only = 'int'))
+VECTORQUAT_MATH.add(parseme.Round(s = '&', f = 'and', only = 'int'))
+VECTORQUAT_MATH.add(parseme.Round(s = '^', f = 'xor', only = 'int'))
+VECTORQUAT_MATH.add(parseme.Round(s = '|', f = 'or', only = 'int'))
 
-glmParse.add(VECTOR_MATH)
+glmParse.add(VECTORQUAT_MATH)
 
 # In the MATRIX section,
 # p is a prefix to the name

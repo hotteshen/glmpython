@@ -41,7 +41,7 @@ static Py_hash_t glm_${p}mat${n}_tp_hash(PyObject *);
 /* ${p}${vectorquat}${m} */
 
 
-/*$ VECTOR_MATH $*/
+/*$ VECTORQUAT_MATH $*/
 $?{not only or type == only or type in only
 static PyObject *glm_${p}${vectorquat}${m}_nb_${f}(PyObject *, PyObject *);
 static PyObject *glm_${p}${vectorquat}${m}_nb_inplace_${f}(PyObject *, PyObject *);
@@ -1017,7 +1017,7 @@ $?}
 
 /* ${p}${vectorquat}${m}: Numbers */
 
-/*$ VECTOR_MATH $*/
+/*$ VECTORQUAT_MATH $*/
 $?{not only or type == only or type in only
 static
 PyObject *glm_${p}${vectorquat}${m}_nb_${f}(PyObject *self, PyObject *other) {
