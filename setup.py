@@ -210,6 +210,16 @@ EXTRA_FUNCTION.add(
 		path = ''
 	)
 )
+EXTRA_FUNCTION.add(
+	parseme.Round(
+		func = 'cross',
+		func_doc = 'Cross product.',
+        args = ('vec3', 'vec3'),
+		returns = 'vec3',
+		type = 'float',
+		path = ''
+	)
+)
 
 glmParse.add(EXTRA_FUNCTION)
 
