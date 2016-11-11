@@ -1946,7 +1946,7 @@ $?}
 /*$ $*/
 $?}
 
-	glm::${returns} computed;
+	${'glm::' if returns != 'float' else ''}${returns} computed;
 	PyObject *result;
 	computed = glm${path}::${func}<${type}>(
 /*$ {len(args)} $*/
@@ -1954,7 +1954,12 @@ $?}
 /*$ $*/
 	);
 
-	result = glm_${returns}New(computed);
+	result =
+$?{returns != 'float'
+		glm_${returns}New(computed);
+$??{
+		Py_BuildValue("f", &computed);
+$?}
 
 	return result;
 }

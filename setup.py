@@ -13,8 +13,8 @@ VECTORQUAT = parseme.Section('VECTORQUAT')
 
 # vectors
 for t in (('', 'float'), ('i', 'int')):
-	for n in range(2, 5):
-		VECTORQUAT.add(parseme.Round(vectorquat='vec', p = t[0], n = n, m = str(n), type = t[1]))
+    for n in range(2, 5):
+        VECTORQUAT.add(parseme.Round(vectorquat='vec', p = t[0], n = n, m = str(n), type = t[1]))
 # quaternion
 VECTORQUAT.add(parseme.Round(vectorquat='quat', p = '', n = 4, m = '', type = 'float'))
 
@@ -40,9 +40,9 @@ glmParse.add(VECTORQUAT_MATH)
 # n is the name, such as 3x4
 MATRIX = parseme.Section('MATRIX')
 for cols in range(2, 5):
-	for rows in range(2, 5):
-		MATRIX.add(parseme.Round(p = '', rows = rows, cols = cols,
-			n = (str(rows) if rows == cols else str(rows) + 'x' + str(cols)), type = 'float'))
+    for rows in range(2, 5):
+        MATRIX.add(parseme.Round(p = '', rows = rows, cols = cols,
+            n = (str(rows) if rows == cols else str(rows) + 'x' + str(cols)), type = 'float'))
 glmParse.add(MATRIX)
 
 # In the MATRIX_FUNCTION section,
@@ -56,43 +56,43 @@ glmParse.add(MATRIX)
 
 MATRIX_FUNCTION = parseme.Section('MATRIX_FUNCTION')
 MATRIX_FUNCTION.add(parseme.Round(
-	func = 'translate',
-	func_doc = 'Translates a 4x4 matrix.',
-	args = ('vec3',),
-	availableTo = ('4',),
-	path = ''
+    func = 'translate',
+    func_doc = 'Translates a 4x4 matrix.',
+    args = ('vec3',),
+    availableTo = ('4',),
+    path = ''
 ))
 MATRIX_FUNCTION.add(parseme.Round(
-	func = 'rotate',
-	func_doc = 'Rotates a 4x4 matrix.',
-	args = (float, 'vec3',),
-	availableTo = ('4',),
-	path = ''
+    func = 'rotate',
+    func_doc = 'Rotates a 4x4 matrix.',
+    args = (float, 'vec3',),
+    availableTo = ('4',),
+    path = ''
 ))
 MATRIX_FUNCTION.add(parseme.Round(
-	func = 'scale',
-	func_doc = 'Scales a 4x4 matrix.',
-	args = ('vec3',),
-	availableTo = ('4',),
-	path = ''
+    func = 'scale',
+    func_doc = 'Scales a 4x4 matrix.',
+    args = ('vec3',),
+    availableTo = ('4',),
+    path = ''
 ))
 
 # Core
 
 MATRIX_FUNCTION.add(parseme.Round(
-	func = 'inverse',
-	func_doc = 'Matrix\'s inverse.',
-	args = (),
-	availableTo = ('2','3','4',),
-	path = ''
+    func = 'inverse',
+    func_doc = 'Matrix\'s inverse.',
+    args = (),
+    availableTo = ('2','3','4',),
+    path = ''
 ))
 MATRIX_FUNCTION.add(parseme.Round(
-	func = 'transpose',
-	func_doc = 'Matrix\'s transpose.',
-	args = (),
-	# availableTo = ('2','3','4','2x3','3x2','2x4','4x2','3x4','4x3'),
-	availableTo = ('2','3','4'),
-	path = ''
+    func = 'transpose',
+    func_doc = 'Matrix\'s transpose.',
+    args = (),
+    # availableTo = ('2','3','4','2x3','3x2','2x4','4x2','3x4','4x3'),
+    availableTo = ('2','3','4'),
+    path = ''
 ))
 
 glmParse.add(MATRIX_FUNCTION)
@@ -117,56 +117,56 @@ glmParse.add(VECTOR_FUNCTION)
 NUMBER_FUNCTION = parseme.Section('NUMBER_FUNCTION')
 
 NUMBER_FUNCTION.add(
-	parseme.Round(
-		func = 'ortho',
-		func_doc = 'Creates an orthographic matrix.',
-		argc = 4,
-		argoc = 2,
-		returns = 'mat4',
-		type = 'float',
-		p = 'f',
-		base = 'mat',
-		path = ''
-	)
+    parseme.Round(
+        func = 'ortho',
+        func_doc = 'Creates an orthographic matrix.',
+        argc = 4,
+        argoc = 2,
+        returns = 'mat4',
+        type = 'float',
+        p = 'f',
+        base = 'mat',
+        path = ''
+    )
 )
 NUMBER_FUNCTION.add(
-	parseme.Round(
-		func = 'frustum',
-		func_doc = 'Creates a frustum matrix.',
-		argc = 6,
-		argoc = 0,
-		returns = 'mat4',
-		type = 'float',
-		p = 'f',
-		base = 'mat',
-		path = ''
-	)
+    parseme.Round(
+        func = 'frustum',
+        func_doc = 'Creates a frustum matrix.',
+        argc = 6,
+        argoc = 0,
+        returns = 'mat4',
+        type = 'float',
+        p = 'f',
+        base = 'mat',
+        path = ''
+    )
 )
 NUMBER_FUNCTION.add(
-	parseme.Round(
-		func = 'perspective',
-		func_doc = 'Creates a perspective matrix.',
-		argc = 4,
-		argoc = 0,
-		returns = 'mat4',
-		type = 'float',
-		p = 'f',
-		base = 'mat',
-		path = ''
-	)
+    parseme.Round(
+        func = 'perspective',
+        func_doc = 'Creates a perspective matrix.',
+        argc = 4,
+        argoc = 0,
+        returns = 'mat4',
+        type = 'float',
+        p = 'f',
+        base = 'mat',
+        path = ''
+    )
 )
 NUMBER_FUNCTION.add(
-	parseme.Round(
-		func = 'perspectiveFov',
-		func_doc = 'Creates a perspective matrix with a defined FOV.',
-		argc = 5,
-		argoc = 0,
-		returns = 'mat4',
-		type = 'float',
-		p = 'f',
-		base = 'mat',
-		path = ''
-	)
+    parseme.Round(
+        func = 'perspectiveFov',
+        func_doc = 'Creates a perspective matrix with a defined FOV.',
+        argc = 5,
+        argoc = 0,
+        returns = 'mat4',
+        type = 'float',
+        p = 'f',
+        base = 'mat',
+        path = ''
+    )
 )
 
 glmParse.add(NUMBER_FUNCTION)
@@ -181,44 +181,54 @@ glmParse.add(NUMBER_FUNCTION)
 EXTRA_FUNCTION = parseme.Section('EXTRA_FUNCTION')
 
 EXTRA_FUNCTION.add(
-	parseme.Round(
-		func = 'lookAt',
-		func_doc = 'Creates a look at view matrix.',
+    parseme.Round(
+        func = 'lookAt',
+        func_doc = 'Creates a look at view matrix.',
         args = ('vec3', 'vec3', 'vec3'),
-		returns = 'mat4',
-		type = 'float',
-		path = ''
-	)
+        returns = 'mat4',
+        type = 'float',
+        path = ''
+    )
 )
 EXTRA_FUNCTION.add(
-	parseme.Round(
-		func = 'project',
-		func_doc = 'Map object coordinates into window coordinates.',
+    parseme.Round(
+        func = 'project',
+        func_doc = 'Map object coordinates into window coordinates.',
         args = ('vec3', 'mat4', 'mat4', 'vec4'),
-		returns = 'vec3',
-		type = 'float',
-		path = ''
-	)
+        returns = 'vec3',
+        type = 'float',
+        path = ''
+    )
 )
 EXTRA_FUNCTION.add(
-	parseme.Round(
-		func = 'unProject',
-		func_doc = 'Map window coordinates into object coordinates.',
+    parseme.Round(
+        func = 'unProject',
+        func_doc = 'Map window coordinates into object coordinates.',
         args = ('vec3', 'mat4', 'mat4', 'vec4'),
-		returns = 'vec3',
-		type = 'float',
-		path = ''
-	)
+        returns = 'vec3',
+        type = 'float',
+        path = ''
+    )
 )
 EXTRA_FUNCTION.add(
-	parseme.Round(
-		func = 'cross',
-		func_doc = 'Cross product.',
+    parseme.Round(
+        func = 'cross',
+        func_doc = 'Cross product.',
         args = ('vec3', 'vec3'),
-		returns = 'vec3',
-		type = 'float',
-		path = ''
-	)
+        returns = 'vec3',
+        type = 'float',
+        path = ''
+    )
+)
+EXTRA_FUNCTION.add(
+    parseme.Round(
+        func = 'dot',
+        func_doc = 'Dot product.',
+        args = ('vec3', 'vec3'),
+        returns = 'float',
+        type = 'float',
+        path = ''
+    )
 )
 
 glmParse.add(EXTRA_FUNCTION)
@@ -231,7 +241,7 @@ BASETYPEDEF.add(parseme.Round(type = 'Quaternion', doc = 'This is a quaternion t
 glmParse.add(BASETYPEDEF)
 
 if glmParse.parse('python.parseme.hpp', 'python.parseme.cpp') > 0:
-	raise SystemExit
+    raise SystemExit
 
 import shutil, os
 from distutils.core import setup, Extension
