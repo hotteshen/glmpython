@@ -332,7 +332,7 @@ PyBufferProcs glm_${p}${vectorquat}${m}_BufferMethods = {
 
 // ${p}${vectorquat}${m} Methods
 
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 static
 PyObject * glm_${p}${vectorquat}${m}_function_${func}(PyObject *self) {
 	PyErr_SetString(PyExc_NotImplementedError, "Function not ported.");
@@ -340,13 +340,13 @@ PyObject * glm_${p}${vectorquat}${m}_function_${func}(PyObject *self) {
 }
 /*$ $*/
 
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 PyDoc_STRVAR(glm_${p}${vectorquat}${m}_function_${func}__doc__, "${func_doc}");
 /*$ $*/
 
 static
 PyMethodDef glm_${p}${vectorquat}${m}Methods[] = {
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 	{"${func}", (PyCFunction) glm_${p}${vectorquat}${m}_function_${func}, ${'METH_NOARGS'}, glm_${p}${vectorquat}${m}_function_${func}__doc__},
 /*$ $*/
 	{NULL, NULL},
@@ -1883,7 +1883,7 @@ PyObject *glm_function_${func}(PyObject *) {
 }
 /*$ $*/
 
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 PyObject *glm_function_${func}(PyObject *) {
 
 	PyErr_SetString(PyExc_TypeError, "GLM functions only accept GLM types...or numbers.");
@@ -1967,7 +1967,7 @@ $?}
 
 /* * * GLM Module * * */
 
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
 /*$ $*/
 
@@ -1985,7 +1985,7 @@ PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
 
 static
 PyMethodDef glmmodule_methods[] = {
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 	{"${func}", (PyCFunction) glm_function_${func}, METH_O, glm_function_${func}__doc__},
 /*$ $*/
 /*$ MATRIX_FUNCTION $*/

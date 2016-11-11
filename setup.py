@@ -97,12 +97,13 @@ MATRIX_FUNCTION.add(parseme.Round(
 
 glmParse.add(MATRIX_FUNCTION)
 
-# In the VECTOR_FUNCTION section,
+# In the VECTORQUAT_FUNCTION section,
 # func is the name of the function
 # func_doc is the doc string
-VECTOR_FUNCTION = parseme.Section('VECTOR_FUNCTION')
-VECTOR_FUNCTION.add(parseme.Round(func = 'abs', func_doc = 'Absolute value.'))
-glmParse.add(VECTOR_FUNCTION)
+VECTORQUAT_FUNCTION = parseme.Section('VECTORQUAT_FUNCTION')
+VECTORQUAT_FUNCTION.add(parseme.Round(vectorquat='vec', func = 'abs', func_doc = 'Absolute value.'))
+VECTORQUAT_FUNCTION.add(parseme.Round(vectorquat='quat', func = 'normalize', func_doc = 'Normalized value.'))
+glmParse.add(VECTORQUAT_FUNCTION)
 
 # In the NUMBER_FUNCTION section,
 # func is the name of the function
