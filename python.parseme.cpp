@@ -44,17 +44,21 @@ static Py_hash_t glm_${p}mat${n}_tp_hash(PyObject *);
 /*$ VECTORQUAT_MATH $*/
 $?{not only or type == only or type in only
 static PyObject *glm_${p}${vectorquat}${m}_nb_${f}(PyObject *, PyObject *);
+$?{vectorquat == 'vec' or s != '-'
 static PyObject *glm_${p}${vectorquat}${m}_nb_inplace_${f}(PyObject *, PyObject *);
 $?}
+$?}
 /*$ $*/
-$?{type == 'float'
+$?{type == 'float' and vectorquat == 'vec'
 static PyObject *glm_${p}${vectorquat}${m}_nb_remainder(PyObject *, PyObject *);
 static PyObject *glm_${p}${vectorquat}${m}_nb_divmod(PyObject *, PyObject *);
 static PyObject *glm_${p}${vectorquat}${m}_nb_power(PyObject *, PyObject *);
 $?}
 static PyObject *glm_${p}${vectorquat}${m}_nb_negative(PyObject *);
 static PyObject *glm_${p}${vectorquat}${m}_nb_positive(PyObject *);
+$?{vectorquat == 'vec'
 static PyObject *glm_${p}${vectorquat}${m}_nb_absolute(PyObject *);
+$?}
 $?{type == 'int'
 
 static PyObject *glm_${p}${vectorquat}${m}_nb_invert(PyObject *);
@@ -223,7 +227,7 @@ PyNumberMethods glm_${p}${vectorquat}${m}_NumberMethods = {
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_add,
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_subtract,
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_multiply,
-$?{type == 'int'
+$?{type == 'int' or vectorquat == 'quat'
 	NULL,
 	NULL,
 	NULL,
@@ -234,7 +238,11 @@ $??{type == 'float'
 $?}
 	(unaryfunc)glm_${p}${vectorquat}${m}_nb_negative,
 	(unaryfunc)glm_${p}${vectorquat}${m}_nb_positive,
+$?{vectorquat == 'vec'
 	(unaryfunc)glm_${p}${vectorquat}${m}_nb_absolute,
+$??{
+	NULL,
+$?}
 	NULL,
 $?{type == 'int'
 	(unaryfunc)glm_${p}${vectorquat}${m}_nb_invert,
@@ -256,9 +264,17 @@ $?}
 	NULL,
 
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_add,
+$?{vectorquat == 'vec'
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_subtract,
-	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_multiply,
+$??{
 	NULL,
+$?}
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_multiply,
+$?{vectorquat == 'vec'
+	NULL,
+$??{
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_true_divide,
+$?}
 	NULL,
 $?{type == 'int'
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_lshift,
@@ -1076,16 +1092,23 @@ $?}
 	return result;
 }
 
+$?{vectorquat == 'vec' or s != '-'
 static
 PyObject *glm_${p}${vectorquat}${m}_nb_inplace_${f}(PyObject *self, PyObject *other) {
-	if(PyNumber_Check(other))
+	if(PyNumber_Check(other)) {
 $?{type == 'int'
 		((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s}= (int)PyLong_AsLong(other);
 $??{type == 'float'
+$?{s == '*' or s == '/' or vectorquat == 'vec'
 		((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s}= (float)PyFloat_AsDouble(other);
 $?}
+$?}
+	}
+$?{s == '+' or s == '*' or vectorquat == 'vec'
 	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type))
+	{
 		((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s}= ((glm_${p}${vectorquat}${m} *)other)->${vectorquat};
+	}
 $?{not only
 	else if(PyIter_Check(other) || Py_TYPE(other)->tp_iter) {
 		PyObject *convert;
@@ -1098,6 +1121,7 @@ $?{not only
 		Py_DECREF(convert);
 	}
 $?}
+$?}
 	else {
 		PyErr_SetString(PyExc_TypeError, "${'Must be a number or of the same type.' if only else 'Must be a number, the same type, or an iterable.'}");
 		return NULL;
@@ -1106,11 +1130,12 @@ $?}
 	Py_INCREF(self);
 	return self;
 }
+$?}
 
 $?}
 /*$ $*/
 
-$?{type == 'float'
+$?{type == 'float' and vectorquat == 'vec'
 static
 PyObject *glm_${p}${vectorquat}${m}_nb_remainder(PyObject *self, PyObject *other) {
 	PyObject *result;
@@ -1225,6 +1250,7 @@ PyObject *glm_${p}${vectorquat}${m}_nb_positive(PyObject *self) {
 	return result;
 }
 
+$?{vectorquat == 'vec'
 static
 PyObject *glm_${p}${vectorquat}${m}_nb_absolute(PyObject *self) {
 	PyObject *result;
@@ -1232,6 +1258,7 @@ PyObject *glm_${p}${vectorquat}${m}_nb_absolute(PyObject *self) {
 	((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::abs(((glm_${p}${vectorquat}${m} *)self)->${vectorquat});
 	return result;
 }
+$?}
 
 $?{type == 'int'
 static
@@ -1377,6 +1404,7 @@ int glm_${p}${vectorquat}${m}_tp_init(PyObject *self, PyObject *args, PyObject *
 		return 0;
 	}
 
+$?{vectorquat == 'vec'
 	if(argsize == 1) {
 		PyObject *tmp;
 		tmp = PyTuple_GET_ITEM(args, 0);
@@ -1396,7 +1424,7 @@ $?}
 			return 0;
 		}
 	}
-
+$?}
 	real->${vectorquat} = glm::${p}${vectorquat}${m}();
 
 	PyObject *tmp;
