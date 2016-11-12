@@ -43,8 +43,8 @@ static Py_hash_t glm_${p}mat${n}_tp_hash(PyObject *);
 
 /*$ VECTORQUAT_MATH $*/
 $?{not only or type == only or type in only
+$?{vectorquat == 'vec' or s in ('+', '*', '/')
 static PyObject *glm_${p}${vectorquat}${m}_nb_${f}(PyObject *, PyObject *);
-$?{vectorquat == 'vec' or s != '-'
 static PyObject *glm_${p}${vectorquat}${m}_nb_inplace_${f}(PyObject *, PyObject *);
 $?}
 $?}
@@ -225,7 +225,11 @@ PyTypeObject glm_${p}mat${n}Type = {
 static
 PyNumberMethods glm_${p}${vectorquat}${m}_NumberMethods = {
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_add,
+$?{vectorquat == 'vec'
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_subtract,
+$??{
+	NULL,
+$?}
 	(binaryfunc)glm_${p}${vectorquat}${m}_nb_multiply,
 $?{type == 'int' or vectorquat == 'quat'
 	NULL,
@@ -1035,6 +1039,7 @@ $?}
 
 /*$ VECTORQUAT_MATH $*/
 $?{not only or type == only or type in only
+$?{vectorquat == 'vec' or s == '+' or s == '*' or s == '/'
 static
 PyObject *glm_${p}${vectorquat}${m}_nb_${f}(PyObject *self, PyObject *other) {
 	PyObject *result;
@@ -1091,6 +1096,7 @@ $?}
 
 	return result;
 }
+$?}
 
 $?{vectorquat == 'vec' or s != '-'
 static
