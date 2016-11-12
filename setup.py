@@ -184,7 +184,7 @@ EXTRA_FUNCTION.add(
     parseme.Round(
         func = 'lookAt',
         func_doc = 'Creates a look at view matrix.',
-        args = ('vec3', 'vec3', 'vec3'),
+        args = ('vec3', 'vec3', 'vec3',),
         returns = 'mat4',
         type = 'float',
         path = ''
@@ -194,7 +194,7 @@ EXTRA_FUNCTION.add(
     parseme.Round(
         func = 'project',
         func_doc = 'Map object coordinates into window coordinates.',
-        args = ('vec3', 'mat4', 'mat4', 'vec4'),
+        args = ('vec3', 'mat4', 'mat4', 'vec4',),
         returns = 'vec3',
         type = 'float',
         path = ''
@@ -204,7 +204,7 @@ EXTRA_FUNCTION.add(
     parseme.Round(
         func = 'unProject',
         func_doc = 'Map window coordinates into object coordinates.',
-        args = ('vec3', 'mat4', 'mat4', 'vec4'),
+        args = ('vec3', 'mat4', 'mat4', 'vec4',),
         returns = 'vec3',
         type = 'float',
         path = ''
@@ -214,7 +214,7 @@ EXTRA_FUNCTION.add(
     parseme.Round(
         func = 'cross',
         func_doc = 'Cross product.',
-        args = ('vec3', 'vec3'),
+        args = ('vec3', 'vec3',),
         returns = 'vec3',
         type = 'float',
         path = ''
@@ -224,7 +224,7 @@ EXTRA_FUNCTION.add(
     parseme.Round(
         func = 'dot',
         func_doc = 'Dot product.',
-        args = ('vec3', 'vec3'),
+        args = ('vec3', 'vec3',),
         returns = 'float',
         type = 'float',
         path = ''
@@ -234,8 +234,18 @@ EXTRA_FUNCTION.add(
     parseme.Round(
         func = 'angleAxis',
         func_doc = 'Build a quaternion from an angle and a normalized axis.',
-        args = (float, 'vec3'),
+        args = (float, 'vec3',),
         returns = 'quat',
+        type = 'float',
+        path = ''
+    )
+)
+EXTRA_FUNCTION.add(
+    parseme.Round(
+        func = 'toMat4',
+        func_doc = 'Converts a quaternion to a 4 * 4 matrix.',
+        args = ('quat',),
+        returns = 'mat4',
         type = 'float',
         path = ''
     )
