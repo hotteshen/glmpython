@@ -1969,7 +1969,7 @@ $?}
 $?{returns != 'float'
 		glm_${returns}New(computed);
 $??{
-		Py_BuildValue("f", &computed);
+		PyFloat_FromDouble(computed);
 $?}
 
 	return result;
