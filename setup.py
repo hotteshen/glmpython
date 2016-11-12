@@ -230,6 +230,16 @@ EXTRA_FUNCTION.add(
         path = ''
     )
 )
+EXTRA_FUNCTION.add(
+    parseme.Round(
+        func = 'angleAxis',
+        func_doc = 'Build a quaternion from an angle and a normalized axis.',
+        args = (float, 'vec3'),
+        returns = 'quat',
+        type = 'float',
+        path = ''
+    )
+)
 
 glmParse.add(EXTRA_FUNCTION)
 
