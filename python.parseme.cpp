@@ -1956,7 +1956,12 @@ $?}
 	PyObject *result;
 	computed = glm${path}::${func}<${type}>(
 /*$ {len(args)} $*/
-	glm_${args[I]}Data(argument${I})${',' if I + 1 < len(args) else ''}
+$?{isinstance(args[I], str)
+		glm_${args[I]}Data(argument${I})
+$??{
+		argument${I}
+$?}
+		${',' if I + 1 < len(args) else ''}
 /*$ $*/
 	);
 
