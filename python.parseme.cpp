@@ -1944,7 +1944,6 @@ $?{isinstance(args[I], str)
 	}
 $?}
 /*$ $*/
-$?}
 
 	${'glm::' if returns != 'float' else ''}${returns} computed;
 	PyObject *result;
@@ -1959,6 +1958,11 @@ $?{returns != 'float'
 		glm_${returns}New(computed);
 $??{
 		Py_BuildValue("f", &computed);
+$?}
+
+$??{
+	// acceptedArgs defined - glm::normalize() section
+
 $?}
 
 	return result;
