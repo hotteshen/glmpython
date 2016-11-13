@@ -103,8 +103,7 @@ glmParse.add(MATRIX_FUNCTION)
 # func is the name of the function
 # func_doc is the doc string
 VECTORQUAT_FUNCTION = parseme.Section('VECTORQUAT_FUNCTION')
-VECTORQUAT_FUNCTION.add(parseme.Round(vectorquat='vec', func = 'abs', func_doc = 'Absolute value.'))
-VECTORQUAT_FUNCTION.add(parseme.Round(vectorquat='quat', func = 'normalize', func_doc = 'Normalized value.'))
+VECTORQUAT_FUNCTION.add(parseme.Round(func = 'abs', func_doc = 'Absolute value.'))
 glmParse.add(VECTORQUAT_FUNCTION)
 
 # In the NUMBER_FUNCTION section,
@@ -256,9 +255,10 @@ EXTRA_FUNCTION.add(
 EXTRA_FUNCTION.add(
     parseme.Round(
         func = 'normalize',
-        func_doc = 'Returns a vector in the same direction as x but with length of 1.',
-        # args = (), #
+        func_doc = 'Returns a vector in the same direction but with length of 1.',
         acceptedArgs = ('vec2', 'vec3', 'vec4', 'quat',),
+        type = 'float',
+        path = ''
     )
 )
 glmParse.add(EXTRA_FUNCTION)

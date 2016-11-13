@@ -1970,13 +1970,32 @@ $?{returns != 'float'
 $??{
 		PyFloat_FromDouble(computed);
 $?}
+	return result;
 
 $??{
-	// acceptedArgs defined - glm::normalize() section
+	// acceptedArgs defined - exclusive section for glm::normalize()
 
+	PyObject *argument0;
+	if (!PyArg_ParseTuple(args, "O:${func}", &argument0))
+		return NULL;
+
+/*$ {len(acceptedArgs)} $*/
+	if(1 == PyObject_IsInstance(argument0, (PyObject *)&glm_${acceptedArgs[I]}Type))
+	{
+		glm::${acceptedArgs[I]} computed = glm${path}::${func}<${type}>(
+											glm_${acceptedArgs[I]}Data(argument0));
+		return glm_${acceptedArgs[I]}New(computed);
+	}
+/*$ $*/
+	{
+		std::stringstream ss;
+		ss << "Argument must be of Vector derivatives not '" << Py_TYPE(argument0)->tp_name << "'.";
+		std::string s = ss.str();
+		PyErr_SetString(PyExc_TypeError, s.c_str());
+		return NULL;
+	}
 $?}
 
-	return result;
 }
 /*$ $*/ // EXTRA_FUNCTION
 
