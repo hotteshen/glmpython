@@ -235,14 +235,32 @@ EXTRA_FUNCTION.add(
 )
 EXTRA_FUNCTION.add(
     parseme.Round(
-        func = 'normalize',
-        func_doc = 'Returns a vector in the same direction as x but with length of 1.',
-        # args = (), # 
-        acceptedArgs = ('vec2', 'vec3', 'vec4', 'quat',),
+        func = 'angleAxis',
+        func_doc = 'Build a quaternion from an angle and a normalized axis.',
+        args = (float, 'vec3',),
+        returns = 'quat',
+        type = 'float',
         path = ''
     )
 )
-
+EXTRA_FUNCTION.add(
+    parseme.Round(
+        func = 'toMat4',
+        func_doc = 'Converts a quaternion to a 4 * 4 matrix.',
+        args = ('quat',),
+        returns = 'mat4',
+        type = 'float',
+        path = ''
+    )
+)
+EXTRA_FUNCTION.add(
+    parseme.Round(
+        func = 'normalize',
+        func_doc = 'Returns a vector in the same direction as x but with length of 1.',
+        # args = (), #
+        acceptedArgs = ('vec2', 'vec3', 'vec4', 'quat',),
+    )
+)
 glmParse.add(EXTRA_FUNCTION)
 
 
