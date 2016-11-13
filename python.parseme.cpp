@@ -336,7 +336,7 @@ PyBufferProcs glm_${p}${vectorquat}${m}_BufferMethods = {
 
 // ${p}${vectorquat}${m} Methods
 
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 static
 PyObject * glm_${p}${vectorquat}${m}_function_${func}(PyObject *self) {
 	PyErr_SetString(PyExc_NotImplementedError, "Function not ported.");
@@ -344,13 +344,13 @@ PyObject * glm_${p}${vectorquat}${m}_function_${func}(PyObject *self) {
 }
 /*$ $*/
 
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 PyDoc_STRVAR(glm_${p}${vectorquat}${m}_function_${func}__doc__, "${func_doc}");
 /*$ $*/
 
 static
 PyMethodDef glm_${p}${vectorquat}${m}Methods[] = {
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 	{"${func}", (PyCFunction) glm_${p}${vectorquat}${m}_function_${func}, ${'METH_NOARGS'}, glm_${p}${vectorquat}${m}_function_${func}__doc__},
 /*$ $*/
 	{NULL, NULL},
@@ -1889,7 +1889,7 @@ PyObject *glm_function_${func}(PyObject *) {
 }
 /*$ $*/
 
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 PyObject *glm_function_${func}(PyObject *) {
 
 	PyErr_SetString(PyExc_TypeError, "GLM functions only accept GLM types...or numbers.");
@@ -1950,7 +1950,6 @@ $?{isinstance(args[I], str)
 	}
 $?}
 /*$ $*/
-$?}
 
 	${'glm::' if returns != 'float' else ''}${returns} computed;
 	PyObject *result;
@@ -1971,14 +1970,38 @@ $?{returns != 'float'
 $??{
 		PyFloat_FromDouble(computed);
 $?}
-
 	return result;
+
+$??{
+	// acceptedArgs defined - exclusive section for glm::normalize()
+
+	PyObject *argument0;
+	if (!PyArg_ParseTuple(args, "O:${func}", &argument0))
+		return NULL;
+
+/*$ {len(acceptedArgs)} $*/
+	if(1 == PyObject_IsInstance(argument0, (PyObject *)&glm_${acceptedArgs[I]}Type))
+	{
+		glm::${acceptedArgs[I]} computed = glm${path}::${func}<${type}>(
+											glm_${acceptedArgs[I]}Data(argument0));
+		return glm_${acceptedArgs[I]}New(computed);
+	}
+/*$ $*/
+	{
+		std::stringstream ss;
+		ss << "Argument must be of Vector derivatives not '" << Py_TYPE(argument0)->tp_name << "'.";
+		std::string s = ss.str();
+		PyErr_SetString(PyExc_TypeError, s.c_str());
+		return NULL;
+	}
+$?}
+
 }
 /*$ $*/ // EXTRA_FUNCTION
 
 /* * * GLM Module * * */
 
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
 /*$ $*/
 
@@ -1996,7 +2019,7 @@ PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
 
 static
 PyMethodDef glmmodule_methods[] = {
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 	{"${func}", (PyCFunction) glm_function_${func}, METH_O, glm_function_${func}__doc__},
 /*$ $*/
 /*$ MATRIX_FUNCTION $*/

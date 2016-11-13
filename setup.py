@@ -5,6 +5,7 @@ import parseme
 glmParse = parseme.Project()
 
 # In the VECTORQUAT section,
+# vectorquat is 'vec' for vectors and 'quat' for quaternions
 # p is a prefix to the name
 # n is the number of components in the vector
 # type is the common type of the vector
@@ -97,12 +98,13 @@ MATRIX_FUNCTION.add(parseme.Round(
 
 glmParse.add(MATRIX_FUNCTION)
 
-# In the VECTOR_FUNCTION section,
+# In the VECTORQUAT_FUNCTION section,
+# vectorquat is 'vec' for vectors and 'quat' for quaternions
 # func is the name of the function
 # func_doc is the doc string
-VECTOR_FUNCTION = parseme.Section('VECTOR_FUNCTION')
-VECTOR_FUNCTION.add(parseme.Round(func = 'abs', func_doc = 'Absolute value.'))
-glmParse.add(VECTOR_FUNCTION)
+VECTORQUAT_FUNCTION = parseme.Section('VECTORQUAT_FUNCTION')
+VECTORQUAT_FUNCTION.add(parseme.Round(func = 'abs', func_doc = 'Absolute value.'))
+glmParse.add(VECTORQUAT_FUNCTION)
 
 # In the NUMBER_FUNCTION section,
 # func is the name of the function
@@ -250,7 +252,15 @@ EXTRA_FUNCTION.add(
         path = ''
     )
 )
-
+EXTRA_FUNCTION.add(
+    parseme.Round(
+        func = 'normalize',
+        func_doc = 'Returns a vector in the same direction but with length of 1.',
+        acceptedArgs = ('vec2', 'vec3', 'vec4', 'quat',),
+        type = 'float',
+        path = ''
+    )
+)
 glmParse.add(EXTRA_FUNCTION)
 
 
