@@ -244,6 +244,16 @@ EXTRA_FUNCTION.add(
 )
 EXTRA_FUNCTION.add(
     parseme.Round(
+        func = 'slerp',
+        func_doc = 'Spherical linear interpolation of two quaternions.',
+        args = ('quat', 'quat', float,),
+        returns = 'quat',
+        type = 'float',
+        path = ''
+    )
+)
+EXTRA_FUNCTION.add(
+    parseme.Round(
         func = 'toMat4',
         func_doc = 'Converts a quaternion to a 4 * 4 matrix.',
         args = ('quat',),

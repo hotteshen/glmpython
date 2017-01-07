@@ -13,6 +13,11 @@ def _randomMatrix4():
 			m[row * 4 + col] = random.random()
 	return m
 
+
+def _randomQuaternion():
+	return glm.quat(_randomVector3(), random.random())
+
+
 # lookAt()
 eye = _randomVector3()
 center = glm.vec3(0, 0, 0)
@@ -50,3 +55,10 @@ print(m.transpose())
 assert type(m) == glm.mat4
 assert type(m.transpose()) == glm.mat4
 
+# slerp()
+q1, q2 = _randomQuaternion(), _randomQuaternion()
+print(glm.slerp(q1, q2, 0.5))
+
+assert type(glm.slerp(q1, q2, random.random())) == glm.quat
+assert glm.slerp(q1, q2, 0) == q1
+assert glm.slerp(q1, q2, 1) == q2
