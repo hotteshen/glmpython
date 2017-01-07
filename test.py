@@ -55,13 +55,15 @@ print(m.transpose())
 assert type(m) == glm.mat4
 assert type(m.transpose()) == glm.mat4
 
-# slerp()
+# lerp() and slerp() for quaternion interpolations
 q1, q2 = _randomQuaternion(), _randomQuaternion()
-print(glm.slerp(q1, q2, 0.5))
+print(glm.lerp(q1, q2, random.random()))
+print(glm.slerp(q1, q2, 1 + random.random()))
 
-assert type(glm.slerp(q1, q2, random.random())) == glm.quat
-assert numpy.isclose(glm.slerp(q1, q2, 0.0), q1, atol=0.001).all()
-assert numpy.isclose(glm.slerp(q1, q2, 1.0), q2, atol=0.001).all()
+assert numpy.isclose(glm.lerp(q1, q2, 0), q1).all()
+assert numpy.isclose(glm.lerp(q1, q2, 1), q2).all()
+assert numpy.isclose(glm.slerp(q1, q2, 0), q1).all()
+assert numpy.isclose(glm.slerp(q1, q2, 1), q2).all()
 
 # conjugate()
 q0 = _randomQuaternion()
