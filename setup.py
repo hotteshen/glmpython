@@ -264,6 +264,16 @@ EXTRA_FUNCTION.add(
 )
 EXTRA_FUNCTION.add(
     parseme.Round(
+        func = 'conjugate',
+        func_doc = 'Conjugate of a quaternion.',
+        args = ('quat',),
+        returns = 'quat',
+        type = 'float',
+        path = ''
+    )
+)
+EXTRA_FUNCTION.add(
+    parseme.Round(
         func = 'normalize',
         func_doc = 'Returns a vector in the same direction but with length of 1.',
         acceptedArgs = ('vec2', 'vec3', 'vec4', 'quat',),

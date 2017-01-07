@@ -1,6 +1,6 @@
 import glm
 import random
-
+import numpy
 
 def _randomVector3():
     return glm.vec3(random.random(), random.random(), random.random())
@@ -60,5 +60,11 @@ q1, q2 = _randomQuaternion(), _randomQuaternion()
 print(glm.slerp(q1, q2, 0.5))
 
 assert type(glm.slerp(q1, q2, random.random())) == glm.quat
-assert glm.slerp(q1, q2, 0) == q1
-assert glm.slerp(q1, q2, 1) == q2
+assert numpy.isclose(glm.slerp(q1, q2, 0.0), q1, atol=0.001).all()
+assert numpy.isclose(glm.slerp(q1, q2, 1.0), q2, atol=0.001).all()
+
+# conjugate()
+q0 = _randomQuaternion()
+q1 = glm.conjugate(q0)
+assert q0.w == q1.w
+print(q0, q1)
