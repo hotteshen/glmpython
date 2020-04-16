@@ -1,8 +1,8 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include "../glm/glm.hpp"
+#include "./glm/glm/glm.hpp"
 #include <sstream>
-#include "../glm/ext.hpp"
+#include "./glm/glm/ext.hpp"
 
 #include "python.hpp"
 
@@ -38,48 +38,52 @@ static int glm_${p}mat${n}_bf_getbuffer(PyObject *, Py_buffer *, int);
 static PyObject *glm_${p}mat${n}_tp_richcompare(PyObject *, PyObject *, int);
 static Py_hash_t glm_${p}mat${n}_tp_hash(PyObject *);
 /*$ $*/
-/*$ VECTOR $*/
+/*$ VECTORQUAT $*/
 
-/* ${p}vec${n} */
+/* ${p}${vectorquat}${m} */
 
 
-/*$ VECTOR_MATH $*/
+/*$ VECTORQUAT_MATH $*/
 $?{not only or type == only or type in only
-static PyObject *glm_${p}vec${n}_nb_${f}(PyObject *, PyObject *);
-static PyObject *glm_${p}vec${n}_nb_inplace_${f}(PyObject *, PyObject *);
+$?{vectorquat == 'vec' or s in ('+', '*', '/')
+static PyObject *glm_${p}${vectorquat}${m}_nb_${f}(PyObject *, PyObject *);
+static PyObject *glm_${p}${vectorquat}${m}_nb_inplace_${f}(PyObject *, PyObject *);
+$?}
 $?}
 /*$ $*/
-$?{type == 'float'
-static PyObject *glm_${p}vec${n}_nb_remainder(PyObject *, PyObject *);
-static PyObject *glm_${p}vec${n}_nb_divmod(PyObject *, PyObject *);
-static PyObject *glm_${p}vec${n}_nb_power(PyObject *, PyObject *);
+$?{type == 'float' and vectorquat == 'vec'
+static PyObject *glm_${p}${vectorquat}${m}_nb_remainder(PyObject *, PyObject *);
+static PyObject *glm_${p}${vectorquat}${m}_nb_divmod(PyObject *, PyObject *);
+static PyObject *glm_${p}${vectorquat}${m}_nb_power(PyObject *, PyObject *);
 $?}
-static PyObject *glm_${p}vec${n}_nb_negative(PyObject *);
-static PyObject *glm_${p}vec${n}_nb_positive(PyObject *);
-static PyObject *glm_${p}vec${n}_nb_absolute(PyObject *);
+static PyObject *glm_${p}${vectorquat}${m}_nb_negative(PyObject *);
+static PyObject *glm_${p}${vectorquat}${m}_nb_positive(PyObject *);
+$?{vectorquat == 'vec'
+static PyObject *glm_${p}${vectorquat}${m}_nb_absolute(PyObject *);
+$?}
 $?{type == 'int'
 
-static PyObject *glm_${p}vec${n}_nb_invert(PyObject *);
+static PyObject *glm_${p}${vectorquat}${m}_nb_invert(PyObject *);
 $?}
 
-$?{type == 'float'
-static PyObject *glm_${p}vec${n}_nb_floor_divide(PyObject *, PyObject *);
-static PyObject *glm_${p}vec${n}_nb_inplace_floor_divide(PyObject *, PyObject *);
+$?{type == 'float' and vectorquat == 'vec'
+static PyObject *glm_${p}${vectorquat}${m}_nb_floor_divide(PyObject *, PyObject *);
+static PyObject *glm_${p}${vectorquat}${m}_nb_inplace_floor_divide(PyObject *, PyObject *);
 $?}
 
-static Py_ssize_t glm_${p}vec${n}_sq_length(PyObject *);
-static PyObject *glm_${p}vec${n}_sq_item(PyObject *, Py_ssize_t);
-static int glm_${p}vec${n}_sq_ass_item(PyObject *, Py_ssize_t, PyObject *);
+static Py_ssize_t glm_${p}${vectorquat}${m}_sq_length(PyObject *);
+static PyObject *glm_${p}${vectorquat}${m}_sq_item(PyObject *, Py_ssize_t);
+static int glm_${p}${vectorquat}${m}_sq_ass_item(PyObject *, Py_ssize_t, PyObject *);
 
-static PyObject *glm_${p}vec${n}_tp_repr(PyObject *);
-static PyObject *glm_${p}vec${n}_tp_getattro(PyObject *, PyObject *);
-static int glm_${p}vec${n}_tp_setattro(PyObject *, PyObject *, PyObject *);
-static int glm_${p}vec${n}_tp_init(PyObject *, PyObject *, PyObject *);
+static PyObject *glm_${p}${vectorquat}${m}_tp_repr(PyObject *);
+static PyObject *glm_${p}${vectorquat}${m}_tp_getattro(PyObject *, PyObject *);
+static int glm_${p}${vectorquat}${m}_tp_setattro(PyObject *, PyObject *, PyObject *);
+static int glm_${p}${vectorquat}${m}_tp_init(PyObject *, PyObject *, PyObject *);
 
-static int glm_${p}vec${n}_bf_getbuffer(PyObject *, Py_buffer *, int);
+static int glm_${p}${vectorquat}${m}_bf_getbuffer(PyObject *, Py_buffer *, int);
 
-static PyObject *glm_${p}vec${n}_tp_richcompare(PyObject *, PyObject *, int);
-static Py_hash_t glm_${p}vec${n}_tp_hash(PyObject *);
+static PyObject *glm_${p}${vectorquat}${m}_tp_richcompare(PyObject *, PyObject *, int);
+static Py_hash_t glm_${p}${vectorquat}${m}_tp_hash(PyObject *);
 /*$ $*/
 
 /* * * Types * * */
@@ -219,32 +223,40 @@ PyTypeObject glm_${p}mat${n}Type = {
 };
 /*$ $*/
 
-/*$ VECTOR $*/
+/*$ VECTORQUAT $*/
 static
-PyNumberMethods glm_${p}vec${n}_NumberMethods = {
-	(binaryfunc)glm_${p}vec${n}_nb_add,
-	(binaryfunc)glm_${p}vec${n}_nb_subtract,
-	(binaryfunc)glm_${p}vec${n}_nb_multiply,
-$?{type == 'int'
+PyNumberMethods glm_${p}${vectorquat}${m}_NumberMethods = {
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_add,
+$?{vectorquat == 'vec'
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_subtract,
+$??{
+	NULL,
+$?}
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_multiply,
+$?{type == 'int' or vectorquat == 'quat'
 	NULL,
 	NULL,
 	NULL,
 $??{type == 'float'
-	(binaryfunc)glm_${p}vec${n}_nb_remainder,
-	(binaryfunc)glm_${p}vec${n}_nb_divmod,
-	(ternaryfunc)glm_${p}vec${n}_nb_power,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_remainder,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_divmod,
+	(ternaryfunc)glm_${p}${vectorquat}${m}_nb_power,
 $?}
-	(unaryfunc)glm_${p}vec${n}_nb_negative,
-	(unaryfunc)glm_${p}vec${n}_nb_positive,
-	(unaryfunc)glm_${p}vec${n}_nb_absolute,
+	(unaryfunc)glm_${p}${vectorquat}${m}_nb_negative,
+	(unaryfunc)glm_${p}${vectorquat}${m}_nb_positive,
+$?{vectorquat == 'vec'
+	(unaryfunc)glm_${p}${vectorquat}${m}_nb_absolute,
+$??{
+	NULL,
+$?}
 	NULL,
 $?{type == 'int'
-	(unaryfunc)glm_${p}vec${n}_nb_invert,
-	(binaryfunc)glm_${p}vec${n}_nb_lshift,
-	(binaryfunc)glm_${p}vec${n}_nb_rshift,
-	(binaryfunc)glm_${p}vec${n}_nb_and,
-	(binaryfunc)glm_${p}vec${n}_nb_xor,
-	(binaryfunc)glm_${p}vec${n}_nb_or,
+	(unaryfunc)glm_${p}${vectorquat}${m}_nb_invert,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_lshift,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_rshift,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_and,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_xor,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_or,
 $??{type == 'float'
 	NULL,
 	NULL,
@@ -257,17 +269,25 @@ $?}
 	NULL,
 	NULL,
 
-	(binaryfunc)glm_${p}vec${n}_nb_inplace_add,
-	(binaryfunc)glm_${p}vec${n}_nb_inplace_subtract,
-	(binaryfunc)glm_${p}vec${n}_nb_inplace_multiply,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_add,
+$?{vectorquat == 'vec'
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_subtract,
+$??{
 	NULL,
+$?}
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_multiply,
+$?{vectorquat == 'vec'
+	NULL,
+$??{
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_true_divide,
+$?}
 	NULL,
 $?{type == 'int'
-	(binaryfunc)glm_${p}vec${n}_nb_inplace_lshift,
-	(binaryfunc)glm_${p}vec${n}_nb_inplace_rshift,
-	(binaryfunc)glm_${p}vec${n}_nb_inplace_and,
-	(binaryfunc)glm_${p}vec${n}_nb_inplace_xor,
-	(binaryfunc)glm_${p}vec${n}_nb_inplace_or,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_lshift,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_rshift,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_and,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_xor,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_or,
 $??{type == 'float'
 	NULL,
 	NULL,
@@ -276,29 +296,33 @@ $??{type == 'float'
 	NULL,
 $?}
 $?{type == 'int'
-	(binaryfunc)glm_${p}vec${n}_nb_true_divide,
-$??{type == 'float'
-	(binaryfunc)glm_${p}vec${n}_nb_floor_divide,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_true_divide,
+$??{type == 'float' and vectorquat == 'vec'
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_floor_divide,
+$??{
+	NULL,
 $?}
-	(binaryfunc)glm_${p}vec${n}_nb_true_divide,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_true_divide,
 $?{type == 'int'
-	(binaryfunc)glm_${p}vec${n}_nb_inplace_true_divide,
-$??{type == 'float'
-	(binaryfunc)glm_${p}vec${n}_nb_inplace_floor_divide,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_true_divide,
+$??{type == 'float' and vectorquat == 'vec'
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_floor_divide,
+$??{
+	NULL,
 $?}
-	(binaryfunc)glm_${p}vec${n}_nb_inplace_true_divide,
+	(binaryfunc)glm_${p}${vectorquat}${m}_nb_inplace_true_divide,
 
 	NULL,
 };
 
 static
-PySequenceMethods glm_${p}vec${n}_SequenceMethods = {
-	(lenfunc)glm_${p}vec${n}_sq_length,
+PySequenceMethods glm_${p}${vectorquat}${m}_SequenceMethods = {
+	(lenfunc)glm_${p}${vectorquat}${m}_sq_length,
 	NULL,
 	NULL,
-	(ssizeargfunc)glm_${p}vec${n}_sq_item,
+	(ssizeargfunc)glm_${p}${vectorquat}${m}_sq_item,
 	NULL,
-	(ssizeobjargproc)glm_${p}vec${n}_sq_ass_item,
+	(ssizeobjargproc)glm_${p}${vectorquat}${m}_sq_ass_item,
 	NULL,
 	NULL,
 
@@ -307,68 +331,68 @@ PySequenceMethods glm_${p}vec${n}_SequenceMethods = {
 };
 
 static
-PyBufferProcs glm_${p}vec${n}_BufferMethods = {
-	(getbufferproc)glm_${p}vec${n}_bf_getbuffer,
+PyBufferProcs glm_${p}${vectorquat}${m}_BufferMethods = {
+	(getbufferproc)glm_${p}${vectorquat}${m}_bf_getbuffer,
 	NULL,
 };
 
-// ${p}vec${n} Methods
+// ${p}${vectorquat}${m} Methods
 
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 static
-PyObject * glm_${p}vec${n}_function_${func}(PyObject *self) {
+PyObject * glm_${p}${vectorquat}${m}_function_${func}(PyObject *self) {
 	PyErr_SetString(PyExc_NotImplementedError, "Function not ported.");
 	return NULL;
 }
 /*$ $*/
 
-/*$ VECTOR_FUNCTION $*/
-PyDoc_STRVAR(glm_${p}vec${n}_function_${func}__doc__, "${func_doc}");
+/*$ VECTORQUAT_FUNCTION $*/
+PyDoc_STRVAR(glm_${p}${vectorquat}${m}_function_${func}__doc__, "${func_doc}");
 /*$ $*/
 
 static
-PyMethodDef glm_${p}vec${n}Methods[] = {
-/*$ VECTOR_FUNCTION $*/
-	{"${func}", (PyCFunction) glm_${p}vec${n}_function_${func}, ${'METH_NOARGS'}, glm_${p}vec${n}_function_${func}__doc__},
+PyMethodDef glm_${p}${vectorquat}${m}Methods[] = {
+/*$ VECTORQUAT_FUNCTION $*/
+	{"${func}", (PyCFunction) glm_${p}${vectorquat}${m}_function_${func}, ${'METH_NOARGS'}, glm_${p}${vectorquat}${m}_function_${func}__doc__},
 /*$ $*/
 	{NULL, NULL},
 };
 
-PyDoc_STRVAR(glm_${p}vec${n}Type__doc__, "A ${n}D${' integer' if type == 'int' else ''} vector.");
+PyDoc_STRVAR(glm_${p}${vectorquat}${m}Type__doc__, "A ${n}D${' integer' if type == 'int' else ''} vector.");
 
-// ${p}vec${n} Object
+// ${p}${vectorquat}${m} Object
 
 static
-PyTypeObject glm_${p}vec${n}Type = {
+PyTypeObject glm_${p}${vectorquat}${m}Type = {
 	PyVarObject_HEAD_INIT(NULL, 0)
-	"glm.${p}vec${n}",										/* tp_name */
-	sizeof(glm_${p}vec${n}),								/* tp_basicsize */
+	"glm.${p}${vectorquat}${m}",										/* tp_name */
+	sizeof(glm_${p}${vectorquat}${m}),								/* tp_basicsize */
 	0,														/* tp_itemsize */
 	0,														/* tp_dealloc */
 	0,														/* tp_print */
 	0,														/* tp_getattr */
 	0,														/* tp_setattr */
 	0,														/* tp_reserved */
-	(reprfunc)glm_${p}vec${n}_tp_repr,						/* tp_repr */
-	&glm_${p}vec${n}_NumberMethods,							/* tp_as_number */
-	&glm_${p}vec${n}_SequenceMethods,						/* tp_as_sequence */
+	(reprfunc)glm_${p}${vectorquat}${m}_tp_repr,						/* tp_repr */
+	&glm_${p}${vectorquat}${m}_NumberMethods,							/* tp_as_number */
+	&glm_${p}${vectorquat}${m}_SequenceMethods,						/* tp_as_sequence */
 	0,														/* tp_as_mapping */
-	(hashfunc)glm_${p}vec${n}_tp_hash,						/* tp_hash  */
+	(hashfunc)glm_${p}${vectorquat}${m}_tp_hash,						/* tp_hash  */
 	0,														/* tp_call */
 	0,														/* tp_str */
-	(getattrofunc)glm_${p}vec${n}_tp_getattro,				/* tp_getattro */
-	(setattrofunc)glm_${p}vec${n}_tp_setattro,				/* tp_setattro */
-	&glm_${p}vec${n}_BufferMethods,							/* tp_as_buffer */
+	(getattrofunc)glm_${p}${vectorquat}${m}_tp_getattro,				/* tp_getattro */
+	(setattrofunc)glm_${p}${vectorquat}${m}_tp_setattro,				/* tp_setattro */
+	&glm_${p}${vectorquat}${m}_BufferMethods,							/* tp_as_buffer */
 	Py_TPFLAGS_DEFAULT |
 	  Py_TPFLAGS_BASETYPE,									/* tp_flags */
-	glm_${p}vec${n}Type__doc__,								/* tp_doc */
+	glm_${p}${vectorquat}${m}Type__doc__,								/* tp_doc */
 	0,														/* tp_traverse */
 	0,														/* tp_clear */
-	glm_${p}vec${n}_tp_richcompare,							/* tp_richcompare */
+	glm_${p}${vectorquat}${m}_tp_richcompare,							/* tp_richcompare */
 	0,														/* tp_weaklistoffset */
 	0,														/* tp_iter */
 	0,														/* tp_iternext */
-	glm_${p}vec${n}Methods,									/* tp_methods */
+	glm_${p}${vectorquat}${m}Methods,									/* tp_methods */
 	0,														/* tp_members */
 	0,														/* tp_getset */
 	0,														/* tp_base */
@@ -376,7 +400,7 @@ PyTypeObject glm_${p}vec${n}Type = {
 	0,														/* tp_descr_get */
 	0,														/* tp_descr_set */
 	0,														/* tp_dictoffset */
-	(initproc)glm_${p}vec${n}_tp_init,						/* tp_init */
+	(initproc)glm_${p}${vectorquat}${m}_tp_init,						/* tp_init */
 	0,														/* tp_alloc */
 	PyType_GenericNew,										/* tp_new */
 };
@@ -389,14 +413,14 @@ static
 PyObject * glm_${type}Iterator_tp_iternext(PyObject *self) {
 	PyObject *result;
 	glm_${type}Iterator *iter = (glm_${type}Iterator *)self;
-	
+
 	if(iter->obj == NULL) {
 		PyErr_SetString(PyExc_TypeError, "${type.capitalize()} is invalid.");
 		return NULL;
 	}
-	
+
 	Py_ssize_t len = PyObject_Size(iter->obj);
-	
+
 	if(len < 0) {
 		std::string s = "'";
 		s += Py_TYPE(iter->obj)->tp_name;
@@ -404,17 +428,17 @@ PyObject * glm_${type}Iterator_tp_iternext(PyObject *self) {
 		PyErr_SetString(PyExc_TypeError, s.c_str());
 		return NULL;
 	}
-	
+
 	if(iter->offset > len - 1)
 		return NULL;
-	
+
 	result = PySequence_GetItem(iter->obj, iter->offset);
-	
+
 	if(result == NULL)
 		return NULL;
-	
+
 	iter->offset += 1;
-	
+
 	return result;
 }
 
@@ -422,10 +446,10 @@ static
 PyObject * glm_${type}Iterator_tp_iter(PyObject *self) {
 	PyObject *result;
 	PyObject *args = Py_BuildValue("(O)", ((glm_${type}Iterator *)self)->obj);
-	
+
 	if(args == NULL)
 		return NULL;
-	
+
 	result = PyObject_CallObject((PyObject *)Py_TYPE(self), args);
 	Py_DECREF(args);
 	return result;
@@ -435,15 +459,15 @@ static
 int glm_${type}Iterator_tp_init(PyObject *self, PyObject *args, PyObject *kwargs) {
 	glm_${type}Iterator *real;
 	PyObject *obj;
-	
+
 	real = (glm_${type}Iterator *)self;
 	real->offset = 0;
-	
+
 	if(!PyArg_ParseTuple(args, "O:${type}Iterator", &obj)) {
 		real->obj = NULL;
 		return -1;
 	}
-	
+
 	if(obj == NULL) {
 		real->obj = NULL;
 	}
@@ -451,7 +475,7 @@ int glm_${type}Iterator_tp_init(PyObject *self, PyObject *args, PyObject *kwargs
 		Py_INCREF(obj);
 		real->obj = obj;
 	}
-	
+
 	return 0;
 }
 
@@ -529,7 +553,7 @@ PyTypeObject glm_${type}IteratorType = {
 static
 PyObject *glm_${p}mat${n}_nb_add(PyObject *self, PyObject *other) {
 	PyObject *result;
-	
+
 	if(PyNumber_Check(other)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
 $?{type == 'int'
@@ -556,7 +580,7 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	return result;
 }
 
@@ -589,7 +613,7 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	return result;
 }
 
@@ -626,7 +650,7 @@ $??{
 $?}
 		return NULL;
 	}
-	
+
 	return result;
 }
 
@@ -655,7 +679,7 @@ PyObject *glm_${p}mat${n}_nb_inplace_add(PyObject *self, PyObject *other) {
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	Py_INCREF(self);
 	return self;
 }
@@ -674,7 +698,7 @@ $?}
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	Py_INCREF(self);
 	return self;
 }
@@ -699,7 +723,7 @@ $??{
 $?}
 		return NULL;
 	}
-	
+
 	Py_INCREF(self);
 	return self;
 }
@@ -737,7 +761,7 @@ $??{
 $?}
 		return NULL;
 	}
-	
+
 	return result;
 }
 
@@ -761,7 +785,7 @@ $??{
 $?}
 		return NULL;
 	}
-	
+
 	Py_INCREF(self);
 	return self;
 }
@@ -780,7 +804,7 @@ PyObject *glm_${p}mat${n}_sq_item(PyObject *self, Py_ssize_t item) {
 		PyErr_SetString(PyExc_IndexError, "Out of range.");
 		return NULL;
 	}
-	
+
 $?{type == 'int'
 	result = PyLong_FromLong((long)((glm_${p}mat${n} *)self)->mat[item/${rows}][item%${rows}]);
 $??{type == 'float'
@@ -795,18 +819,18 @@ int glm_${p}mat${n}_sq_ass_item(PyObject *self, Py_ssize_t item, PyObject *value
 		PyErr_SetString(PyExc_IndexError, "Out of range.");
 		return -1;
 	}
-	
+
 	if(!PyNumber_Check(value)) {
 		PyErr_SetString(PyExc_TypeError, "Must be a number.");
 		return -1;
 	}
-	
+
 $?{type == 'int'
 	((glm_${p}mat${n} *)self)->mat[item/${rows}][item%${rows}] = (int)PyLong_AsLong(value);
 $??{type == 'float'
 	((glm_${p}mat${n} *)self)->mat[item/${rows}][item%${rows}] = (float)PyFloat_AsDouble(value);
 $?}
-	
+
 	return 0;
 }
 
@@ -834,20 +858,20 @@ int glm_${p}mat${n}_tp_init(PyObject *self, PyObject *args, PyObject *kwargs) {
 		PyErr_SetString(PyExc_TypeError, "Can only init ${p}mat${n}.");
 		return -1;
 	}
-	
+
 	glm_${p}mat${n} *real = (glm_${p}mat${n} *)self;
-	
+
 	Py_ssize_t argsize = PyTuple_GET_SIZE(args);
-	
+
 	if(argsize == 0) {
 		real->mat = glm::${p}mat${n}();
 		return 0;
 	}
-	
+
 	if(argsize == 1) {
 		PyObject *tmp;
 		tmp = PyTuple_GET_ITEM(args, 0);
-		
+
 		if(PyNumber_Check(tmp)) {
 $?{type == 'int'
 			real->mat = glm::${p}mat${n}((int)PyLong_AsLong(tmp));
@@ -856,16 +880,16 @@ $??{type == 'float'
 $?}
 			return 0;
 		}
-		
+
 		if(PyBytes_CheckExact(tmp)) {
 			memcpy(&real->mat, PyBytes_AsString(tmp), sizeof(${type}) * ${cols * rows});
-			
+
 			return 0;
 		}
 	}
-	
+
 	real->mat = glm::${p}mat${n}();
-	
+
 	PyObject *tmp;
 	Py_ssize_t i;
 	Py_ssize_t at = 0;
@@ -875,33 +899,33 @@ $?}
 
 		if(PyBytes_CheckExact(tmp)) {
 			size_t len = PyBytes_Size(tmp) / sizeof(${type});
-			
+
 			if(at + len > ${cols * rows - 1})
 				len = ${cols * rows} - at;
-			
+
 			memcpy(glm::value_ptr(real->mat) + at, PyBytes_AsString(tmp), len * sizeof(${type}));
-			
+
 			at += len;
 		}
 		else if(PyIter_Check(tmp) || Py_TYPE(tmp)->tp_iter) {
 			PyObject *tmpi = PyObject_GetIter(tmp);
 			PyObject *item;
-	
+
 			while(1) {
 				item = PyIter_Next(tmpi);
 				if(item == NULL)
 					break;
-		
+
 $?{type == 'int'
 				real->mat[at/${rows}][at%${rows}] = (int)PyLong_AsLong(item);
 $??{type == 'float'
 				real->mat[at/${rows}][at%${rows}] = (float)PyFloat_AsDouble(item);
 $?}
-		
+
 				Py_DECREF(item);
 				at += 1;
 			}
-	
+
 			Py_DECREF(tmpi);
 		}
 		else if(PyNumber_Check(tmp)) {
@@ -917,13 +941,13 @@ $?}
 			PyErr_Format(PyExc_TypeError, "Initialization only accepts numbers, sequences, and bytes as arguments, not '%s' at argument %i.", Py_TYPE(tmp)->tp_name, (int)at);
 			return -1;
 		}
-		
+
 		if(at > ${cols * rows}) {
 			PyErr_SetString(PyExc_TypeError, "Too much data.");
 			return -1;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -942,43 +966,43 @@ PyObject *glm_${p}mat${n}_tp_richcompare(PyObject *self, PyObject *other, int op
 					PyObject *itero = PyObject_GetIter(other);
 					PyObject *iteritem;
 					PyObject *iteritemo;
-					
+
 					if(iter != NULL && itero != NULL) {
 						while(true) {
 							iteritem = PyIter_Next(iter);
 							iteritemo = PyIter_Next(itero);
-						
+
 							if(iteritem == NULL && iteritemo == NULL) {
 								Py_INCREF(Py_True);
 								return Py_True;
 							}
-						
+
 							if(iteritem == NULL || iteritemo == NULL || 1 != PyObject_RichCompareBool(iteritem, iteritemo, Py_${I[0]}))
 								break;
-							
+
 							Py_DECREF(iteritem);
 							Py_DECREF(iteritemo);
 						}
 					}
-					
+
 					Py_XDECREF(iter);
 					Py_XDECREF(itero);
 				}
-				
+
 				Py_INCREF(Py_False);
 				return Py_False;
 			}
-			
+
 			if(1 != PyObject_IsInstance(other, (PyObject *)&glm_${p}mat${n}Type)) {
 				Py_INCREF(Py_False);
 				return Py_False;
 			}
-			
+
 			if(((glm_${p}mat${n} *)self)->mat ${I[1]} ((glm_${p}mat${n} *)other)->mat) {
 				Py_INCREF(Py_True);
 				return Py_True;
 			}
-			
+
 			Py_INCREF(Py_False);
 			return Py_False;
 /*$ $*/
@@ -1002,338 +1026,363 @@ $??{
 	x ^= _Py_HashDouble((double)((glm_${p}mat${n} *)self)->mat[${int(I/rows)}][${int(I%rows)}]) << ${int(I / (cols * rows) * 31)};
 /*$ $*/
 $?}
-	
+
 	if(x == -1)
 		x = -2;
-	
+
 	return x;
 }
 
 /*$ $*/
-/*$ VECTOR $*/
-/* * * ${p}vec${n} * * */
+/*$ VECTORQUAT $*/
+/* * * ${p}${vectorquat}${m} * * */
 
-/* ${p}vec${n}: Numbers */
+/* ${p}${vectorquat}${m}: Numbers */
 
-/*$ VECTOR_MATH $*/
+/*$ VECTORQUAT_MATH $*/
 $?{not only or type == only or type in only
+$?{vectorquat == 'vec' or s == '+' or s == '*' or s == '/'
 static
-PyObject *glm_${p}vec${n}_nb_${f}(PyObject *self, PyObject *other) {
+PyObject *glm_${p}${vectorquat}${m}_nb_${f}(PyObject *self, PyObject *other) {
 	PyObject *result;
 	if(PyNumber_Check(other)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
+$?{s == '*' or s == '/' or vectorquat == 'vec'
+
 $?{type == 'int'
-		((glm_${p}vec${n} *)result)->vec = ((glm_${p}vec${n} *)self)->vec ${s} (int)PyLong_AsLong(other);
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = ((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s} (int)PyLong_AsLong(other);
 $??{type == 'float'
-		((glm_${p}vec${n} *)result)->vec = ((glm_${p}vec${n} *)self)->vec ${s} (float)PyFloat_AsDouble(other);
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = ((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s} (float)PyFloat_AsDouble(other);
+$?}
+
 $?}
 	}
-	else if(PyNumber_Check(self) && 1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type)) {
+	else if(PyNumber_Check(self) && 1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(other), NULL);
+$?{s == '*' or vectorquat == 'vec'
+
 $?{type == 'int'
-		((glm_${p}vec${n} *)result)->vec = (int)PyLong_AsLong(self) ${s} ((glm_${p}vec${n} *)other)->vec;
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = (int)PyLong_AsLong(self) ${s} ((glm_${p}${vectorquat}${m} *)other)->${vectorquat};
 $??{type == 'float'
-		((glm_${p}vec${n} *)result)->vec = (float)PyFloat_AsDouble(self) ${s} ((glm_${p}vec${n} *)other)->vec;
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = (float)PyFloat_AsDouble(self) ${s} ((glm_${p}${vectorquat}${m} *)other)->${vectorquat};
+$?}
+
 $?}
 	}
-	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type)) {
+	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
-		((glm_${p}vec${n} *)result)->vec = ((glm_${p}vec${n} *)self)->vec ${s} ((glm_${p}vec${n} *)other)->vec;
+$?{s == '+' or s == '*' or vectorquat == 'vec'
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = ((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s} ((glm_${p}${vectorquat}${m} *)other)->${vectorquat};
+$?}
 	}
 $?{not only
 	else if(PyIter_Check(other) || Py_TYPE(other)->tp_iter) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
-		
+
+$?{s == '+' or s == '*' or vectorquat == 'vec'
 		PyObject *convert;
 		PyObject *args = Py_BuildValue("(O)", other);
 		convert = PyObject_CallObject((PyObject *)Py_TYPE(self), args);
 		Py_DECREF(args);
-		
-		((glm_${p}vec${n} *)result)->vec = ((glm_${p}vec${n} *)self)->vec ${s} ((glm_${p}vec${n} *)convert)->vec;
-		
+
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = ((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s} ((glm_${p}${vectorquat}${m} *)convert)->${vectorquat};
+
 		Py_DECREF(convert);
+$?}
 	}
 $?}
 	else {
 		PyErr_SetString(PyExc_TypeError, "${'Must be a number or of the same type.' if only else 'Must be a number, the same type, or an iterable.'}");
 		return NULL;
 	}
-	
+
 	return result;
 }
-
-static
-PyObject *glm_${p}vec${n}_nb_inplace_${f}(PyObject *self, PyObject *other) {
-	if(PyNumber_Check(other))
-$?{type == 'int'
-		((glm_${p}vec${n} *)self)->vec ${s}= (int)PyLong_AsLong(other);
-$??{type == 'float'
-		((glm_${p}vec${n} *)self)->vec ${s}= (float)PyFloat_AsDouble(other);
 $?}
-	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type))
-		((glm_${p}vec${n} *)self)->vec ${s}= ((glm_${p}vec${n} *)other)->vec;
+
+$?{vectorquat == 'vec' or s != '-'
+static
+PyObject *glm_${p}${vectorquat}${m}_nb_inplace_${f}(PyObject *self, PyObject *other) {
+	if(PyNumber_Check(other)) {
+$?{type == 'int'
+		((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s}= (int)PyLong_AsLong(other);
+$??{type == 'float'
+$?{s == '*' or s == '/' or vectorquat == 'vec'
+		((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s}= (float)PyFloat_AsDouble(other);
+$?}
+$?}
+	}
+$?{s == '+' or s == '*' or vectorquat == 'vec'
+	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type))
+	{
+		((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s}= ((glm_${p}${vectorquat}${m} *)other)->${vectorquat};
+	}
 $?{not only
 	else if(PyIter_Check(other) || Py_TYPE(other)->tp_iter) {
 		PyObject *convert;
 		PyObject *args = Py_BuildValue("(O)", other);
 		convert = PyObject_CallObject((PyObject *)Py_TYPE(self), args);
 		Py_DECREF(args);
-		
-		((glm_${p}vec${n} *)self)->vec ${s}= ((glm_${p}vec${n} *)convert)->vec;
-		
+
+		((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${s}= ((glm_${p}${vectorquat}${m} *)convert)->${vectorquat};
+
 		Py_DECREF(convert);
 	}
+$?}
 $?}
 	else {
 		PyErr_SetString(PyExc_TypeError, "${'Must be a number or of the same type.' if only else 'Must be a number, the same type, or an iterable.'}");
 		return NULL;
 	}
-	
+
 	Py_INCREF(self);
 	return self;
 }
+$?}
 
 $?}
 /*$ $*/
 
-$?{type == 'float'
+$?{type == 'float' and vectorquat == 'vec'
 static
-PyObject *glm_${p}vec${n}_nb_remainder(PyObject *self, PyObject *other) {
+PyObject *glm_${p}${vectorquat}${m}_nb_remainder(PyObject *self, PyObject *other) {
 	PyObject *result;
 	if(PyNumber_Check(other)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
 $?{type == 'int'
-		((glm_${p}vec${n} *)result)->vec = glm::mod(((glm_${p}vec${n} *)self)->vec, (int)PyLong_AsLong(other));
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::mod(((glm_${p}${vectorquat}${m} *)self)->${vectorquat}, (int)PyLong_AsLong(other));
 $??{type == 'float'
-		((glm_${p}vec${n} *)result)->vec = glm::mod(((glm_${p}vec${n} *)self)->vec, (float)PyFloat_AsDouble(other));
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::mod(((glm_${p}${vectorquat}${m} *)self)->${vectorquat}, (float)PyFloat_AsDouble(other));
 $?}
 	}
-	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type)) {
+	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
-		((glm_${p}vec${n} *)result)->vec = glm::mod(((glm_${p}vec${n} *)self)->vec, ((glm_${p}vec${n} *)other)->vec);
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::mod(((glm_${p}${vectorquat}${m} *)self)->${vectorquat}, ((glm_${p}${vectorquat}${m} *)other)->${vectorquat});
 	}
 	else {
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	return result;
 }
 
 static
-PyObject *glm_${p}vec${n}_nb_divmod(PyObject *self, PyObject *other) {
-	if(PyNumber_Check(self) && 1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type)) {
+PyObject *glm_${p}${vectorquat}${m}_nb_divmod(PyObject *self, PyObject *other) {
+	if(PyNumber_Check(self) && 1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
 		PyObject *whole = PyNumber_FloorDivide(self, other);
-	
+
 		if(whole == NULL)
 			return NULL;
-		
+
 		PyObject *args = Py_BuildValue("(O)", self);
 		PyObject *tmp = Py_TYPE(other)->tp_new(Py_TYPE(other), args, NULL);
 		Py_DECREF(args);
 		PyObject *remain = PyNumber_Remainder(tmp, other);
 		Py_DECREF(tmp);
-		
+
 		if(remain == NULL) {
 			Py_DECREF(whole);
 			return NULL;
 		}
-		
+
 		PyObject *result = Py_BuildValue("(OO)", whole, remain);
-		
+
 		Py_DECREF(whole);
 		Py_DECREF(remain);
-		
+
 		return result;
 	}
-	else if(!PyNumber_Check(other) && 1 != PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type)) {
+	else if(!PyNumber_Check(other) && 1 != PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
 		PyErr_SetString(PyExc_TypeError, "Other must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	PyObject *whole = PyNumber_FloorDivide(self, other);
-	
+
 	if(whole == NULL)
 		return NULL;
-	
+
 	PyObject *remain = PyNumber_Remainder(self, other);
-	
+
 	if(remain == NULL) {
 		Py_DECREF(whole);
 		return NULL;
 	}
-	
+
 	PyObject *result = Py_BuildValue("(OO)", whole, remain);
-	
+
 	Py_DECREF(whole);
 	Py_DECREF(remain);
-	
+
 	return result;
 }
 
 static
-PyObject *glm_${p}vec${n}_nb_power(PyObject *self, PyObject *other) {
+PyObject *glm_${p}${vectorquat}${m}_nb_power(PyObject *self, PyObject *other) {
 	PyObject *result;
 	if(PyNumber_Check(other)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);;
-		
+
 $?{type == 'int'
-		((glm_${p}vec${n} *)result)->vec = glm::pow(((glm_${p}vec${n} *)self)->vec, glm::${p}vec${n}((int)PyLong_AsLong(other)));
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::pow(((glm_${p}${vectorquat}${m} *)self)->${vectorquat}, glm::${p}${vectorquat}${m}((int)PyLong_AsLong(other)));
 $??{type == 'float'
-		((glm_${p}vec${n} *)result)->vec = glm::pow(((glm_${p}vec${n} *)self)->vec, glm::${p}vec${n}((float)PyFloat_AsDouble(other)));
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::pow(((glm_${p}${vectorquat}${m} *)self)->${vectorquat}, glm::${p}${vectorquat}${m}((float)PyFloat_AsDouble(other)));
 $?}
 	}
-	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type)) {
+	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
-		((glm_${p}vec${n} *)result)->vec = glm::pow(((glm_${p}vec${n} *)self)->vec, ((glm_${p}vec${n} *)other)->vec);
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::pow(((glm_${p}${vectorquat}${m} *)self)->${vectorquat}, ((glm_${p}${vectorquat}${m} *)other)->${vectorquat});
 	}
 	else {
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	return result;
 }
 $?}
 
 static
-PyObject *glm_${p}vec${n}_nb_negative(PyObject *self) {
+PyObject *glm_${p}${vectorquat}${m}_nb_negative(PyObject *self) {
 	PyObject *result;
 	result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
-	((glm_${p}vec${n} *)result)->vec = -((glm_${p}vec${n} *)self)->vec;
+	((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = -((glm_${p}${vectorquat}${m} *)self)->${vectorquat};
 	return result;
 }
 
 static
-PyObject *glm_${p}vec${n}_nb_positive(PyObject *self) {
+PyObject *glm_${p}${vectorquat}${m}_nb_positive(PyObject *self) {
 	PyObject *result;
 	result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
 	return result;
 }
 
+$?{vectorquat == 'vec'
 static
-PyObject *glm_${p}vec${n}_nb_absolute(PyObject *self) {
+PyObject *glm_${p}${vectorquat}${m}_nb_absolute(PyObject *self) {
 	PyObject *result;
 	result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
-	((glm_${p}vec${n} *)result)->vec = glm::abs(((glm_${p}vec${n} *)self)->vec);
+	((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::abs(((glm_${p}${vectorquat}${m} *)self)->${vectorquat});
 	return result;
 }
+$?}
 
 $?{type == 'int'
 static
-PyObject *glm_${p}vec${n}_nb_invert(PyObject *self) {
+PyObject *glm_${p}${vectorquat}${m}_nb_invert(PyObject *self) {
 	PyObject *result;
 	result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
-	((glm_${p}vec${n} *)result)->vec = ~((glm_${p}vec${n} *)self)->vec;
+	((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = ~((glm_${p}${vectorquat}${m} *)self)->${vectorquat};
 	return result;
 }
 $?}
 
-$?{type == 'float'
+$?{type == 'float' and vectorquat == 'vec'
 static
-PyObject *glm_${p}vec${n}_nb_floor_divide(PyObject *self, PyObject *other) {
+PyObject *glm_${p}${vectorquat}${m}_nb_floor_divide(PyObject *self, PyObject *other) {
 	PyObject *result;
 	if(PyNumber_Check(other)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
 $?{type == 'int'
-		((glm_${p}vec${n} *)result)->vec = glm::floor(((glm_${p}vec${n} *)self)->vec / (int)PyLong_AsLong(other));
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::floor(((glm_${p}${vectorquat}${m} *)self)->${vectorquat} / (int)PyLong_AsLong(other));
 $??{type == 'float'
-		((glm_${p}vec${n} *)result)->vec = glm::floor(((glm_${p}vec${n} *)self)->vec / (float)PyFloat_AsDouble(other));
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::floor(((glm_${p}${vectorquat}${m} *)self)->${vectorquat} / (float)PyFloat_AsDouble(other));
 $?}
 	}
-	else if(PyNumber_Check(self) && 1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type)) {
+	else if(PyNumber_Check(self) && 1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(other), NULL);
 $?{type == 'int'
-		((glm_${p}vec${n} *)result)->vec = glm::floor((int)PyLong_AsLong(self) / ((glm_${p}vec${n} *)other)->vec);
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::floor((int)PyLong_AsLong(self) / ((glm_${p}${vectorquat}${m} *)other)->${vectorquat});
 $??{type == 'float'
-		((glm_${p}vec${n} *)result)->vec = glm::floor((float)PyFloat_AsDouble(self) / ((glm_${p}vec${n} *)other)->vec);
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::floor((float)PyFloat_AsDouble(self) / ((glm_${p}${vectorquat}${m} *)other)->${vectorquat});
 $?}
 	}
-	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type)) {
+	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
 		result = PyObject_CallObject((PyObject *)Py_TYPE(self), NULL);
-		((glm_${p}vec${n} *)result)->vec = glm::floor(((glm_${p}vec${n} *)self)->vec / ((glm_${p}vec${n} *)other)->vec);
+		((glm_${p}${vectorquat}${m} *)result)->${vectorquat} = glm::floor(((glm_${p}${vectorquat}${m} *)self)->${vectorquat} / ((glm_${p}${vectorquat}${m} *)other)->${vectorquat});
 	}
 	else {
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
+
 	return result;
 }
 $?}
 
-$?{type == 'float'
+$?{type == 'float' and vectorquat == 'vec'
 static
-PyObject *glm_${p}vec${n}_nb_inplace_floor_divide(PyObject *self, PyObject *other) {
+PyObject *glm_${p}${vectorquat}${m}_nb_inplace_floor_divide(PyObject *self, PyObject *other) {
 	if(PyNumber_Check(other))
 $?{type == 'int'
-		((glm_${p}vec${n} *)self)->vec /= (int)PyLong_AsLong(other);
+		((glm_${p}${vectorquat}${m} *)self)->${vectorquat} /= (int)PyLong_AsLong(other);
 $??{type == 'float'
-		((glm_${p}vec${n} *)self)->vec /= (float)PyFloat_AsDouble(other);
+		((glm_${p}${vectorquat}${m} *)self)->${vectorquat} /= (float)PyFloat_AsDouble(other);
 $?}
-	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type))
-		((glm_${p}vec${n} *)self)->vec /= ((glm_${p}vec${n} *)other)->vec;
+	else if(1 == PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type))
+		((glm_${p}${vectorquat}${m} *)self)->${vectorquat} /= ((glm_${p}${vectorquat}${m} *)other)->${vectorquat};
 	else {
 		PyErr_SetString(PyExc_TypeError, "Must be a number or of the same type.");
 		return NULL;
 	}
-	
-	((glm_${p}vec${n} *)self)->vec = glm::floor(((glm_${p}vec${n} *)self)->vec);
-	
+
+	((glm_${p}${vectorquat}${m} *)self)->${vectorquat} = glm::floor(((glm_${p}${vectorquat}${m} *)self)->${vectorquat});
+
 	Py_INCREF(self);
 	return self;
 }
 $?}
 
-/* ${p}vec${n}: Sequence */
+/* ${p}${vectorquat}${m}: Sequence */
 
 static
-Py_ssize_t glm_${p}vec${n}_sq_length(PyObject *self) {
+Py_ssize_t glm_${p}${vectorquat}${m}_sq_length(PyObject *self) {
 	return ${n};
 }
 
 static
-PyObject *glm_${p}vec${n}_sq_item(PyObject *self, Py_ssize_t item) {
+PyObject *glm_${p}${vectorquat}${m}_sq_item(PyObject *self, Py_ssize_t item) {
 	PyObject *result;
 	if(item >= ${n}) {
 		PyErr_SetString(PyExc_IndexError, "Out of range.");
 		return NULL;
 	}
-	
+
 $?{type == 'int'
-	result = PyLong_FromLong((long)((glm_${p}vec${n} *)self)->vec[item]);
+	result = PyLong_FromLong((long)((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[item]);
 $??{type == 'float'
-	result = PyFloat_FromDouble((double)((glm_${p}vec${n} *)self)->vec[item]);
+	result = PyFloat_FromDouble((double)((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[item]);
 $?}
 	return result;
 }
 
 static
-int glm_${p}vec${n}_sq_ass_item(PyObject *self, Py_ssize_t item, PyObject *value) {
+int glm_${p}${vectorquat}${m}_sq_ass_item(PyObject *self, Py_ssize_t item, PyObject *value) {
 	if(item >= ${n}) {
 		PyErr_SetString(PyExc_IndexError, "Out of range.");
 		return -1;
 	}
-	
+
 	if(!PyNumber_Check(value)) {
 		PyErr_SetString(PyExc_TypeError, "Must be a number.");
 		return -1;
 	}
-	
+
 $?{type == 'int'
-	((glm_${p}vec${n} *)self)->vec[item] = (int)PyLong_AsLong(value);
+	((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[item] = (int)PyLong_AsLong(value);
 $??{type == 'float'
-	((glm_${p}vec${n} *)self)->vec[item] = (float)PyFloat_AsDouble(value);
+	((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[item] = (float)PyFloat_AsDouble(value);
 $?}
-	
+
 	return 0;
 }
 
 /* Definition */
 
 static
-PyObject * glm_${p}vec${n}_tp_repr(PyObject *self) {
-	glm::${p}vec${n} *v = &((glm_${p}vec${n} *)self)->vec;
+PyObject * glm_${p}${vectorquat}${m}_tp_repr(PyObject *self) {
+	glm::${p}${vectorquat}${m} *v = &((glm_${p}${vectorquat}${m} *)self)->${vectorquat};
 	std::stringstream s;
 $?{type == 'float'
 	s.precision(std::numeric_limits<float>::digits10);
@@ -1348,87 +1397,88 @@ $?}
 }
 
 static
-int glm_${p}vec${n}_tp_init(PyObject *self, PyObject *args, PyObject *kwargs) {
-	if(1 != PyObject_IsInstance(self, (PyObject *)&glm_${p}vec${n}Type)) {
-		PyErr_SetString(PyExc_TypeError, "Can only init ${p}vec${n}.");
+int glm_${p}${vectorquat}${m}_tp_init(PyObject *self, PyObject *args, PyObject *kwargs) {
+	if(1 != PyObject_IsInstance(self, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
+		PyErr_SetString(PyExc_TypeError, "Can only init ${p}${vectorquat}${m}.");
 		return -1;
 	}
-	
-	glm_${p}vec${n} *real = (glm_${p}vec${n} *)self;
-	
+
+	glm_${p}${vectorquat}${m} *real = (glm_${p}${vectorquat}${m} *)self;
+
 	Py_ssize_t argsize = PyTuple_GET_SIZE(args);
-	
+
 	if(argsize == 0) {
-		real->vec = glm::${p}vec${n}();
+		real->${vectorquat} = glm::${p}${vectorquat}${m}();
 		return 0;
 	}
-	
+
+$?{vectorquat == 'vec'
 	if(argsize == 1) {
 		PyObject *tmp;
 		tmp = PyTuple_GET_ITEM(args, 0);
-		
+
 		if(PyNumber_Check(tmp)) {
 $?{type == 'int'
-			real->vec = glm::${p}vec${n}((int)PyLong_AsLong(tmp));
+			real->${vectorquat} = glm::${p}${vectorquat}${m}((int)PyLong_AsLong(tmp));
 $??{type == 'float'
-			real->vec = glm::${p}vec${n}((float)PyFloat_AsDouble(tmp));
+			real->${vectorquat} = glm::${p}${vectorquat}${m}((float)PyFloat_AsDouble(tmp));
 $?}
 			return 0;
 		}
-		
+
 		if(PyBytes_CheckExact(tmp)) {
-			memcpy(&real->vec, PyBytes_AsString(tmp), sizeof(${type}) * ${n});
-			
+			memcpy(&real->${vectorquat}, PyBytes_AsString(tmp), sizeof(${type}) * ${n});
+
 			return 0;
 		}
 	}
-	
-	real->vec = glm::${p}vec${n}();
-	
+$?}
+	real->${vectorquat} = glm::${p}${vectorquat}${m}();
+
 	PyObject *tmp;
 	Py_ssize_t i;
 	Py_ssize_t at = 0;
 
 	for(i = 0; i < argsize; i++) {
 		tmp = PyTuple_GET_ITEM(args, i);
-		
+
 		if(PyBytes_CheckExact(tmp)) {
 			size_t len = PyBytes_Size(tmp) / sizeof(${type});
-			
+
 			if(at + len > ${n - 1})
 				len = ${n} - at;
-			
-			memcpy(glm::value_ptr(real->vec) + at, PyBytes_AsString(tmp), len * sizeof(${type}));
-			
+
+			memcpy(glm::value_ptr(real->${vectorquat}) + at, PyBytes_AsString(tmp), len * sizeof(${type}));
+
 			at += len;
 		}
 		else if(PyIter_Check(tmp) || Py_TYPE(tmp)->tp_iter) {
 			PyObject *tmpi = PyObject_GetIter(tmp);
 			PyObject *item;
-	
+
 			while(1) {
 				item = PyIter_Next(tmpi);
 				if(item == NULL)
 					break;
-		
+
 $?{type == 'int'
-				real->vec[at] = (int)PyLong_AsLong(item);
+				real->${vectorquat}[at] = (int)PyLong_AsLong(item);
 $??{type == 'float'
-				real->vec[at] = (float)PyFloat_AsDouble(item);
+				real->${vectorquat}[at] = (float)PyFloat_AsDouble(item);
 $?}
-		
+
 				Py_DECREF(item);
-				
+
 				at += 1;
 			}
-	
+
 			Py_DECREF(tmpi);
 		}
 		else if(PyNumber_Check(tmp)) {
 $?{type == 'int'
-			real->vec[at] = (int)PyLong_AsLong(tmp);
+			real->${vectorquat}[at] = (int)PyLong_AsLong(tmp);
 $??{type == 'float'
-			real->vec[at] = (float)PyFloat_AsDouble(tmp);
+			real->${vectorquat}[at] = (float)PyFloat_AsDouble(tmp);
 $?}
 
 			at += 1;
@@ -1437,49 +1487,49 @@ $?}
 			PyErr_Format(PyExc_TypeError, "Initialization only accepts numbers, sequences, and bytes as arguments, not '%s' at argument %i.", Py_TYPE(tmp)->tp_name, (int)at);
 			return -1;
 		}
-		
+
 		if(at > ${n}) {
 			PyErr_SetString(PyExc_TypeError, "Too much data.");
 			return -1;
 		}
 	}
-	
+
 	return 0;
 }
 
 static
-PyObject * glm_${p}vec${n}_tp_getattro(PyObject *self, PyObject *attr_name) {
+PyObject * glm_${p}${vectorquat}${m}_tp_getattro(PyObject *self, PyObject *attr_name) {
 	PyObject *tmp;
 	tmp = PyObject_GenericGetAttr(self, attr_name);
-	
+
 	if(tmp != NULL)
 		return tmp;
 	else
 		PyErr_Clear();
-	
+
 	if(!PyUnicode_Check(attr_name)) {
 		PyErr_SetString(PyExc_TypeError, "Attributes use strings.");
 		return NULL;
 	}
-	
+
 	Py_ssize_t swizzles = PyObject_Size(attr_name);
-	
+
 	if(swizzles < 1) {
 		PyErr_SetString(PyExc_TypeError, "Attributes are strings with a commendable length.");
 		return NULL;
 	}
-	
+
 	PyObject * result;
 	PyObject * args;
 	Py_ssize_t c;
-	
+
 	args = PyTuple_New(swizzles);
-	
+
 	if(args == NULL) {
 		PyErr_SetString(PyExc_ValueError, "Could not create a simple tuple...hmmm...");
 		return NULL;
 	}
-	
+
 	for(c = 0; c < swizzles; c++) {
 		tmp = PySequence_ITEM(attr_name, c);
 /*$ {((0, 'x', 's', 'r'), (1, 'y', 't', 'g'), (2, 'z', 'p', 'b'), (3, 'w', 'q', 'a'))[:n]} $*/
@@ -1488,9 +1538,9 @@ PyObject * glm_${p}vec${n}_tp_getattro(PyObject *self, PyObject *attr_name) {
 			PyUnicode_CompareWithASCIIString(tmp, "${I[2]}") == 0 ||
 			PyUnicode_CompareWithASCIIString(tmp, "${I[3]}") == 0 )
 $?{type == 'int'
-			PyTuple_SET_ITEM(args, c, PyLong_FromLong((long)((glm_${p}vec${n} *)self)->vec[${I[0]}]));
+			PyTuple_SET_ITEM(args, c, PyLong_FromLong((long)((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[${I[0]}]));
 $??{type == 'float'
-			PyTuple_SET_ITEM(args, c, PyFloat_FromDouble((double)((glm_${p}vec${n} *)self)->vec[${I[0]}]));
+			PyTuple_SET_ITEM(args, c, PyFloat_FromDouble((double)((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[${I[0]}]));
 $?}
 /*$ $*/
 		else {
@@ -1499,10 +1549,10 @@ $?}
 			PyErr_SetString(PyExc_AttributeError, "Swizzle out of range.");
 			return NULL;
 		}
-		
+
 		Py_DECREF(tmp);
 	}
-	
+
 	if(swizzles == 1) {
 		result = PyTuple_GET_ITEM(args, 0);
 		Py_INCREF(result);
@@ -1515,27 +1565,27 @@ $?}
 		result = PyObject_CallObject((PyObject *)&glm_${p}vec4Type, args);
 	else
 		return args;
-	
+
 	Py_DECREF(args);
-	
+
 	if(result == NULL)
 		PyErr_SetString(PyExc_ValueError, "Could not create vector.");
-	
+
 	return result;
 }
 
 static
-int glm_${p}vec${n}_tp_setattro(PyObject *self, PyObject *attr_name, PyObject *value) {
+int glm_${p}${vectorquat}${m}_tp_setattro(PyObject *self, PyObject *attr_name, PyObject *value) {
 	if(!PyUnicode_Check(attr_name)) {
 		PyErr_SetString(PyExc_TypeError, "Attributes use strings.");
 		return -1;
 	}
-	
+
 	Py_ssize_t swizzles = PyObject_Size(attr_name);
-	
+
 	Py_ssize_t c;
 	PyObject *tmp;
-	
+
 	if(PyNumber_Check(value)) {
 		for(c = 0; c < swizzles; c++) {
 			tmp = PySequence_ITEM(attr_name, c);
@@ -1545,9 +1595,9 @@ int glm_${p}vec${n}_tp_setattro(PyObject *self, PyObject *attr_name, PyObject *v
 				PyUnicode_CompareWithASCIIString(tmp, "${I[2]}") == 0 ||
 				PyUnicode_CompareWithASCIIString(tmp, "${I[3]}") == 0 )
 $?{type == 'int'
-				((glm_${p}vec${n} *)self)->vec[${I[0]}] = (int)PyLong_AsLong(value);
+				((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[${I[0]}] = (int)PyLong_AsLong(value);
 $??{type == 'float'
-				((glm_${p}vec${n} *)self)->vec[${I[0]}] = (float)PyFloat_AsDouble(value);
+				((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[${I[0]}] = (float)PyFloat_AsDouble(value);
 $?}
 /*$ $*/
 			else {
@@ -1555,21 +1605,21 @@ $?}
 				PyErr_SetString(PyExc_AttributeError, "Swizzle out of range.");
 				return -1;
 			}
-		
+
 			Py_DECREF(tmp);
 		}
 	}
 	else if(PyIter_Check(value) || Py_TYPE(value)->tp_iter) {
 		PyObject *iter = PyObject_GetIter(value);
 		PyObject *iteritem;
-		
+
 		if(iter == NULL)
 			return -1;
-		
+
 		for(c = 0; c < swizzles; c++) {
 			tmp = PySequence_ITEM(attr_name, c);
 			iteritem = PyIter_Next(iter);
-			
+
 			if(iteritem == NULL) {
 				Py_DECREF(tmp);
 				Py_DECREF(iter);
@@ -1589,9 +1639,9 @@ $?}
 				PyUnicode_CompareWithASCIIString(tmp, "${I[2]}") == 0 ||
 				PyUnicode_CompareWithASCIIString(tmp, "${I[3]}") == 0 )
 $?{type == 'int'
-				((glm_${p}vec${n} *)self)->vec[${I[0]}] = (int)PyLong_AsLong(iteritem);
+				((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[${I[0]}] = (int)PyLong_AsLong(iteritem);
 $??{type == 'float'
-				((glm_${p}vec${n} *)self)->vec[${I[0]}] = (float)PyFloat_AsDouble(iteritem);
+				((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[${I[0]}] = (float)PyFloat_AsDouble(iteritem);
 $?}
 /*$ $*/
 			else {
@@ -1601,68 +1651,68 @@ $?}
 				PyErr_SetString(PyExc_AttributeError, "Swizzle out of range.");
 				return -1;
 			}
-			
+
 			Py_DECREF(iteritem);
 			Py_DECREF(tmp);
 		}
-		
+
 		Py_DECREF(iter);
 	}
 	else {
 		PyErr_SetString(PyExc_AttributeError, "Value must be a number or iterable.");
 		return -1;
 	}
-	
+
 	return 0;
 }
 
-int glm_${p}vec${n}_bf_getbuffer(PyObject *self, Py_buffer *view, int flags) {
-	PyBuffer_FillInfo(view, self, glm::value_ptr(((glm_${p}vec${n} *)self)->vec), sizeof(${type}) * ${n}, 1, PyBUF_SIMPLE);
+int glm_${p}${vectorquat}${m}_bf_getbuffer(PyObject *self, Py_buffer *view, int flags) {
+	PyBuffer_FillInfo(view, self, glm::value_ptr(((glm_${p}${vectorquat}${m} *)self)->${vectorquat}), sizeof(${type}) * ${n}, 1, PyBUF_SIMPLE);
 	return 0;
 }
 
-PyObject *glm_${p}vec${n}_tp_richcompare(PyObject *self, PyObject *other, int op) {
+PyObject *glm_${p}${vectorquat}${m}_tp_richcompare(PyObject *self, PyObject *other, int op) {
 	switch(op) {
 /*$ {(('EQ', '=='), ('NE', '!='))} $*/
 		case Py_${I[0]}:
-			if(1 != PyObject_IsInstance(other, (PyObject *)&glm_${p}vec${n}Type)) {
+			if(1 != PyObject_IsInstance(other, (PyObject *)&glm_${p}${vectorquat}${m}Type)) {
 				if((PyIter_Check(other) || Py_TYPE(other)->tp_iter) && PyObject_Size(self) == PyObject_Size(other)) {
 					PyObject *iter = PyObject_GetIter(self);
 					PyObject *itero = PyObject_GetIter(other);
 					PyObject *iteritem;
 					PyObject *iteritemo;
-					
+
 					if(iter != NULL && itero != NULL) {
 						while(true) {
 							iteritem = PyIter_Next(iter);
 							iteritemo = PyIter_Next(itero);
-						
+
 							if(iteritem == NULL && iteritemo == NULL) {
 								Py_INCREF(Py_True);
 								return Py_True;
 							}
-						
+
 							if(iteritem == NULL || iteritemo == NULL || 1 != PyObject_RichCompareBool(iteritem, iteritemo, Py_${I[0]}))
 								break;
-							
+
 							Py_DECREF(iteritem);
 							Py_DECREF(iteritemo);
 						}
 					}
-					
+
 					Py_XDECREF(iter);
 					Py_XDECREF(itero);
 				}
-				
+
 				Py_INCREF(Py_False);
 				return Py_False;
 			}
-			
-			if(((glm_${p}vec${n} *)self)->vec ${I[1]} ((glm_${p}vec${n} *)other)->vec) {
+
+			if(((glm_${p}${vectorquat}${m} *)self)->${vectorquat} ${I[1]} ((glm_${p}${vectorquat}${m} *)other)->${vectorquat}) {
 				Py_INCREF(Py_True);
 				return Py_True;
 			}
-			
+
 			Py_INCREF(Py_False);
 			return Py_False;
 /*$ $*/
@@ -1672,24 +1722,24 @@ PyObject *glm_${p}vec${n}_tp_richcompare(PyObject *self, PyObject *other, int op
 	}
 }
 
-Py_hash_t glm_${p}vec${n}_tp_hash(PyObject *self) {
+Py_hash_t glm_${p}${vectorquat}${m}_tp_hash(PyObject *self) {
 	Py_hash_t x;
 
 $?{type == 'int'
-	x = (Py_hash_t) ((glm_${p}vec${n} *)self)->vec[0];
+	x = (Py_hash_t) ((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[0];
 /*$ {range(1, n)} $*/
-	x ^= (Py_hash_t) ((glm_${p}vec${n} *)self)->vec[${I}] << ${int(I / n * 31)};
+	x ^= (Py_hash_t) ((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[${I}] << ${int(I / n * 31)};
 /*$ $*/
 $??{
-	x = _Py_HashDouble((double)((glm_${p}vec${n} *)self)->vec[0]);
+	x = _Py_HashDouble((double)((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[0]);
 /*$ {range(1, n)} $*/
-	x ^= _Py_HashDouble((double)((glm_${p}vec${n} *)self)->vec[${I}]) << ${int(I / n * 31)};
+	x ^= _Py_HashDouble((double)((glm_${p}${vectorquat}${m} *)self)->${vectorquat}[${I}]) << ${int(I / n * 31)};
 /*$ $*/
 $?}
-	
+
 	if(x == -1)
 		x = -2;
-	
+
 	return x;
 }
 /*$ $*/
@@ -1703,10 +1753,10 @@ PyObject *glm_${p}mat${n}New(glm::${p}mat${n} m) {
 	return (PyObject *)result;
 }
 /*$ $*/
-/*$ VECTOR $*/
-PyObject *glm_${p}vec${n}New(glm::${p}vec${n} v) {
-	glm_${p}vec${n} *result = PyObject_New(glm_${p}vec${n}, &glm_${p}vec${n}Type);
-	result->vec = v;
+/*$ VECTORQUAT $*/
+PyObject *glm_${p}${vectorquat}${m}New(glm::${p}${vectorquat}${m} v) {
+	glm_${p}${vectorquat}${m} *result = PyObject_New(glm_${p}${vectorquat}${m}, &glm_${p}${vectorquat}${m}Type);
+	result->${vectorquat} = v;
 	return (PyObject *)result;
 }
 /*$ $*/
@@ -1719,14 +1769,14 @@ PyObject *glm_${type}_tp_iter(PyObject *self) {
 	PyObject *result;
 	PyObject *args;
 	args = Py_BuildValue("(O)", self);
-	
+
 	if(args == NULL) {
 		PyErr_SetString(PyExc_SystemError, "Invalid self.");
 		return (PyObject *) NULL;
 	}
-	
+
 	result = PyObject_CallObject((PyObject *)&glm_${type}IteratorType, args);
-	
+
 	Py_DECREF(args);
 	return result;
 }
@@ -1790,14 +1840,14 @@ $?{args
 /*$ {len(args)} $*/
 	${'PyObject *' if isinstance(args[I], str) else args[I].__name__} argument${I};
 /*$ $*/
-	
+
 	if(!PyArg_ParseTuple(args, "${''.join('f' if t == float else 'i' if t == int else 'O' for t in args)}:${func}"
 /*$ {len(args)} $*/
 	, &argument${I}
 /*$ $*/
 	))
 		return NULL;
-	
+
 /*$ {len(args)} $*/
 $?{isinstance(args[I], str)
 	if(1 != PyObject_IsInstance(argument${I}, (PyObject *)&glm_${args[I]}Type)) {
@@ -1810,7 +1860,7 @@ $?{isinstance(args[I], str)
 $?}
 /*$ $*/
 $?}
-	
+
 	glm::${p}mat${n} computed;
 	PyObject *result;
 	computed = glm${path}::${func}(glm_${p}mat${n}Data(self)
@@ -1822,9 +1872,9 @@ $??{
 $?}
 /*$ $*/
 	);
-	
+
 	result = glm_${p}mat${n}New(computed);
-	
+
 	return result;
 }
 $?}
@@ -1835,15 +1885,15 @@ $?}
 
 /*$ MATRIX_FUNCTION $*/
 PyObject *glm_function_${func}(PyObject *) {
-	
+
 	PyErr_SetString(PyExc_TypeError, "GLM functions only accept GLM types...or numbers.");
 	return NULL;
 }
 /*$ $*/
 
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 PyObject *glm_function_${func}(PyObject *) {
-	
+
 	PyErr_SetString(PyExc_TypeError, "GLM functions only accept GLM types...or numbers.");
 	return NULL;
 }
@@ -1854,31 +1904,106 @@ PyObject *glm_function_${func}(PyObject *module, PyObject *args) {
 /*$ {argc + argoc} $*/
 	${type} a${I};
 /*$ $*/
-	
+
 	if(!PyArg_ParseTuple(args, "${p * argc}|${p * argoc}:${func}",
 /*$ {argc + argoc} $*/
 	&a${I}${', ' if I + 1 < argc + argoc else ''}
 /*$ $*/
 	))
 		return NULL;
-	
+
 	PyObject *result = PyObject_CallObject((PyObject *)&glm_${returns}Type, NULL);
-	
-	((glm_${returns} *)result)->${base} = 
+
+	((glm_${returns} *)result)->${base} =
 	glm${path}::${func}<${type}>(
 /*$ {argc + argoc} $*/
 	a${I}${', ' if I + 1 < argc + argoc else ''}
 /*$ $*/
 );
-	
+
 	return result;
 }
 
 /*$ $*/
 
+/*$ EXTRA_FUNCTION $*/
+static
+PyObject *glm_function_${func}(PyObject *module, PyObject *args) {
+$?{args
+/*$ {len(args)} $*/
+	${'PyObject *' if isinstance(args[I], str) else args[I].__name__} argument${I};
+/*$ $*/
+
+	if(!PyArg_ParseTuple(args, "${''.join('f' if t == float else 'i' if t == int else 'O' for t in args)}:${func}"
+/*$ {len(args)} $*/
+	, &argument${I}
+/*$ $*/
+	))
+		return NULL;
+
+/*$ {len(args)} $*/
+$?{isinstance(args[I], str)
+	if(1 != PyObject_IsInstance(argument${I}, (PyObject *)&glm_${args[I]}Type)) {
+		std::stringstream ss;
+		ss << "Argument ${I + 1} must be of type '${'glm.' + args[I] if isinstance(args[I], str) else args[I].__name__}' not '" << Py_TYPE(argument${I})->tp_name << "'.";
+		std::string s = ss.str();
+		PyErr_SetString(PyExc_TypeError, s.c_str());
+		return NULL;
+	}
+$?}
+/*$ $*/
+
+	${'glm::' if returns != 'float' else ''}${returns} computed;
+	PyObject *result;
+	computed = glm${path}::${func}<${type}>(
+/*$ {len(args)} $*/
+$?{isinstance(args[I], str)
+		glm_${args[I]}Data(argument${I})
+$??{
+		argument${I}
+$?}
+		${',' if I + 1 < len(args) else ''}
+/*$ $*/
+	);
+
+	result =
+$?{returns != 'float'
+		glm_${returns}New(computed);
+$??{
+		PyFloat_FromDouble(computed);
+$?}
+	return result;
+
+$??{
+	// acceptedArgs defined - exclusive section for glm::normalize()
+
+	PyObject *argument0;
+	if (!PyArg_ParseTuple(args, "O:${func}", &argument0))
+		return NULL;
+
+/*$ {len(acceptedArgs)} $*/
+	if(1 == PyObject_IsInstance(argument0, (PyObject *)&glm_${acceptedArgs[I]}Type))
+	{
+		glm::${acceptedArgs[I]} computed = glm${path}::${func}<${type}>(
+											glm_${acceptedArgs[I]}Data(argument0));
+		return glm_${acceptedArgs[I]}New(computed);
+	}
+/*$ $*/
+	{
+		std::stringstream ss;
+		ss << "Argument must be of Vector derivatives not '" << Py_TYPE(argument0)->tp_name << "'.";
+		std::string s = ss.str();
+		PyErr_SetString(PyExc_TypeError, s.c_str());
+		return NULL;
+	}
+$?}
+
+}
+/*$ $*/ // EXTRA_FUNCTION
+
 /* * * GLM Module * * */
 
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
 /*$ $*/
 
@@ -1890,15 +2015,22 @@ PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
 PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
 /*$ $*/
 
+/*$ EXTRA_FUNCTION $*/
+PyDoc_STRVAR(glm_function_${func}__doc__, "${func_doc}");
+/*$ $*/
+
 static
 PyMethodDef glmmodule_methods[] = {
-/*$ VECTOR_FUNCTION $*/
+/*$ VECTORQUAT_FUNCTION $*/
 	{"${func}", (PyCFunction) glm_function_${func}, METH_O, glm_function_${func}__doc__},
 /*$ $*/
 /*$ MATRIX_FUNCTION $*/
 	{"${func}", (PyCFunction) glm_function_${func}, METH_VARARGS, glm_function_${func}__doc__},
 /*$ $*/
 /*$ NUMBER_FUNCTION $*/
+	{"${func}", (PyCFunction) glm_function_${func}, METH_VARARGS, glm_function_${func}__doc__},
+/*$ $*/
+/*$ EXTRA_FUNCTION $*/
 	{"${func}", (PyCFunction) glm_function_${func}, METH_VARARGS, glm_function_${func}__doc__},
 /*$ $*/
 	{NULL, NULL},
@@ -1924,26 +2056,26 @@ PyInit_glm()
 	PyType_Ready(&glm_${type}IteratorType);
 	PyType_Ready(&glm_${type}Type);
 /*$ $*/
-	
+
 	/* Ready Matrices */
 /*$ MATRIX $*/
 	glm_${p}mat${n}Type.tp_base = &glm_MatrixType;
 	PyType_Ready(&glm_${p}mat${n}Type);
 /*$ $*/
-	
+
 	/* Ready Vectors */
-/*$ VECTOR $*/
-	glm_${p}vec${n}Type.tp_base = &glm_VectorType;
-	PyType_Ready(&glm_${p}vec${n}Type);
+/*$ VECTORQUAT $*/
+	glm_${p}${vectorquat}${m}Type.tp_base = &glm_VectorType;
+	PyType_Ready(&glm_${p}${vectorquat}${m}Type);
 /*$ $*/
-	
+
 	PyObject* m;
 
 	m = PyModule_Create(&glmmodule);
-	
+
 	if(m == NULL)
 		return NULL;
-	
+
 	/* Add types to module */
 /*$ BASETYPEDEF $*/
 	Py_INCREF(&glm_${type}IteratorType);
@@ -1952,8 +2084,8 @@ PyInit_glm()
 /*$ MATRIX $*/
 	Py_INCREF(&glm_${p}mat${n}Type);
 /*$ $*/
-/*$ VECTOR $*/
-	Py_INCREF(&glm_${p}vec${n}Type);
+/*$ VECTORQUAT $*/
+	Py_INCREF(&glm_${p}${vectorquat}${m}Type);
 /*$ $*/
 /*$ BASETYPEDEF $*/
 	PyModule_AddObject(m, "${type}Iterator", (PyObject *) &glm_${type}IteratorType);
@@ -1962,10 +2094,10 @@ PyInit_glm()
 /*$ MATRIX $*/
 	PyModule_AddObject(m, "${p}mat${n}", (PyObject *) &glm_${p}mat${n}Type);
 /*$ $*/
-/*$ VECTOR $*/
-	PyModule_AddObject(m, "${p}vec${n}", (PyObject *) &glm_${p}vec${n}Type);
+/*$ VECTORQUAT $*/
+	PyModule_AddObject(m, "${p}${vectorquat}${m}", (PyObject *) &glm_${p}${vectorquat}${m}Type);
 /*$ $*/
-	
+
 	return m;
 }
 
