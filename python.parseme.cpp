@@ -1,8 +1,8 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include "../glm/glm.hpp"
+#include "./glm/glm/glm.hpp"
 #include <sstream>
-#include "../glm/ext.hpp"
+#include "./glm/glm/ext.hpp"
 
 #include "python.hpp"
 

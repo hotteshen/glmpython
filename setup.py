@@ -306,7 +306,7 @@ if glmParse.parse('python.parseme.hpp', 'python.parseme.cpp') > 0:
 import shutil, os
 from distutils.core import setup, Extension
 
-glm = Extension('glm', sources = ['python.cpp'], include_dirs = ['../'])
+glm = Extension('glm', sources = ['python.cpp'], include_dirs = ['./glm/'])
 
 setup(name='glm',
       version='0.9.3',

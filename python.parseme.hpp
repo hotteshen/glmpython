@@ -1,6 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include "../glm/glm.hpp"
+#include "./glm/glm/glm.hpp"
 
 /* Type Definitions */
 /*$ BASETYPEDEF $*/
